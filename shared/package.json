@@ -1,0 +1,6 @@
+{
+  "name": "@agrivolt/shared",
+  "version": "0.1.0",
+  "private": true,
+  "main": "types.ts"
+}

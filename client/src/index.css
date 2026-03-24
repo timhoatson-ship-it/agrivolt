@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-body text-gray-900 bg-white;
+    margin: 0;
+  }
+
+  /* Mapbox overrides for AgriVolt */
+  .mapboxgl-popup-content {
+    @apply rounded-card shadow-assessment p-0 !important;
+    border: none !important;
+  }
+
+  .mapboxgl-popup-close-button {
+    @apply text-gray-400 hover:text-gray-600 text-lg p-2;
+  }
+
+  .mapboxgl-ctrl-group {
+    @apply rounded-lg shadow-card !important;
+  }
+}
+
+@layer components {
+  /* Assessment card floating over map */
+  .assessment-card {
+    @apply bg-white rounded-card shadow-assessment p-6;
+    @apply border border-gray-100;
+    max-width: 380px;
+    backdrop-filter: blur(8px);
+  }
+
+  /* Grid proximity badge */
+  .badge-green {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-green-100 text-green-800;
+  }
+  .badge-amber {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-amber-100 text-amber-800;
+  }
+  .badge-red {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-red-100 text-red-800;
+  }
+  .badge-grey {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-gray-100 text-gray-600;
+  }
+
+  /* Layer toggle switch */
+  .layer-toggle {
+    @apply relative inline-flex h-5 w-9 items-center rounded-full;
+    @apply transition-colors duration-200 ease-in-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2;
+  }
+  .layer-toggle[data-state="checked"] {
+    @apply bg-brand-500;
+  }
+  .layer-toggle[data-state="unchecked"] {
+    @apply bg-gray-300;
+  }
+
+  /* Stat callout */
+  .stat-block {
+    @apply text-center;
+  }
+  .stat-block .stat-value {
+    @apply text-3xl font-bold font-display tracking-tight;
+  }
+  .stat-block .stat-label {
+    @apply text-sm text-gray-500 mt-1;
+  }
+
+  /* Primary CTA button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3;
+    @apply bg-brand-400 hover:bg-brand-500 text-white font-semibold;
+    @apply rounded-lg transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2;
+    @apply shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3;
+    @apply bg-white hover:bg-gray-50 text-gray-900 font-semibold;
+    @apply rounded-lg border border-gray-300 transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2;
+  }
+}
