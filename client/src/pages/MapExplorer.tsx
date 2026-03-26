@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Layers, X, Search, Loader2 } from 'lucide-react';
+import { ArrowLeft, Layers, X, Search, Loader2, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatAud, formatKm, formatHa } from '@/lib/utils';
 import {
@@ -10,6 +10,7 @@ import {
   getGridProximityRating,
   getOverallViability,
 } from '@/lib/calculator';
+import { api } from '@/lib/api';
 import type { LandAssessment, GridProximityRating } from '@shared/types';
 
 // Mapbox token — replace with your own or set VITE_MAPBOX_TOKEN env var
@@ -46,6 +47,7 @@ export default function MapExplorer() {
   const [assessment, setAssessment] = useState<LandAssessment | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
 
   // Initialize map
   useEffect(() => {
@@ -99,7 +101,7 @@ export default function MapExplorer() {
             source: 'substations',
             minzoom: 8,
             layout: {
-              'text-field': ['get', 'NAME'],
+              'text-field': ['get', 'name'],
               'text-size': 11,
               'text-offset': [0, 1.5],
               'text-anchor': 'top',
@@ -118,17 +120,40 @@ export default function MapExplorer() {
         try {
           const transRes = await fetch(GA_TRANSMISSION);
           const transData = await transRes.json();
-          map.addSource('transmission', { type: 'geojson', data: transData });
-          map.addLayer({
-            id: 'transmission-layer',
-            type: 'line',
-            source: 'transmission',
-            paint: {
-              'line-color': '#ef4444',
-              'line-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 10, 2, 15, 3],
-              'line-opacity': 0.7,
-            },
-          });
+          console.log('[AgriVolt] Transmission lines loaded:', transData?.features?.length || 0, 'features');
+          if (transData?.features?.length) {
+            map.addSource('transmission', { type: 'geojson', data: transData });
+            map.addLayer({
+              id: 'transmission-layer',
+              type: 'line',
+              source: 'transmission',
+              paint: {
+                'line-color': '#ef4444',
+                'line-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 10, 2, 15, 3],
+                'line-opacity': 0.7,
+              },
+            });
+            // Labels for transmission lines at zoom
+            map.addLayer({
+              id: 'transmission-labels',
+              type: 'symbol',
+              source: 'transmission',
+              minzoom: 9,
+              layout: {
+                'text-field': ['concat', ['get', 'name'], ' (', ['get', 'capacitykv'], 'kV)'],
+                'text-size': 10,
+                'symbol-placement': 'line',
+                'text-offset': [0, -0.8],
+              },
+              paint: {
+                'text-color': '#ef4444',
+                'text-halo-color': '#000000',
+                'text-halo-width': 1,
+              },
+            });
+          } else {
+            console.warn('[AgriVolt] Transmission response had no features:', transData?.error);
+          }
         } catch (err) {
           console.warn('Failed to load transmission lines:', err);
         }
@@ -212,7 +237,7 @@ export default function MapExplorer() {
       coordinates: { lat, lng },
       totalHectares,
       nearestSubstation: {
-        name: nearestSub?.properties?.NAME || 'Unknown',
+        name: nearestSub?.properties?.name || 'Unknown',
         distanceKm: Math.round(nearestDist * 10) / 10,
         rating: gridRating,
         coordinates: {
@@ -274,7 +299,14 @@ export default function MapExplorer() {
 
     const layerMapId = `${layerId}-layer`;
     const current = map.getLayoutProperty(layerMapId, 'visibility');
-    map.setLayoutProperty(layerMapId, 'visibility', current === 'visible' ? 'none' : 'visible');
+    const newVis = current === 'visible' ? 'none' : 'visible';
+    map.setLayoutProperty(layerMapId, 'visibility', newVis);
+
+    // Also toggle associated label layers
+    const labelsId = `${layerId}-labels`;
+    if (map.getLayer(labelsId)) {
+      map.setLayoutProperty(labelsId, 'visibility', newVis);
+    }
   };
 
   // Search handler (Mapbox Geocoding)
@@ -416,6 +448,15 @@ export default function MapExplorer() {
             <AssessmentCard
               assessment={assessment}
               onClose={() => setAssessment(null)}
+              onRegister={() => setShowRegistrationModal(true)}
+            />
+          )}
+
+          {/* Registration modal */}
+          {showRegistrationModal && assessment && (
+            <RegistrationModal
+              assessment={assessment}
+              onClose={() => setShowRegistrationModal(false)}
             />
           )}
         </div>
@@ -426,7 +467,7 @@ export default function MapExplorer() {
 
 // --- Assessment Card Component ---
 
-function AssessmentCard({ assessment, onClose }: { assessment: LandAssessment; onClose: () => void }) {
+function AssessmentCard({ assessment, onClose, onRegister }: { assessment: LandAssessment; onClose: () => void; onRegister: () => void }) {
   const rating = assessment.overallViabilityScore;
 
   return (
@@ -488,7 +529,7 @@ function AssessmentCard({ assessment, onClose }: { assessment: LandAssessment; o
       )}
 
       {/* CTA */}
-      <button className="btn-primary w-full mt-4 text-sm">
+      <button onClick={onRegister} className="btn-primary w-full mt-4 text-sm">
         Register Interest
       </button>
       <p className="text-xs text-gray-400 text-center mt-2">
@@ -536,6 +577,275 @@ function ratingColor(rating: GridProximityRating): string {
   };
   return colors[rating];
 }
+
+// --- Registration Modal ---
+
+function RegistrationModal({ assessment, onClose }: { assessment: LandAssessment; onClose: () => void }) {
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    propertyAddress: '',
+    totalHectares: assessment.totalHectares.toString(),
+    currentLandUse: '',
+    interestLevel: 'exploring' as 'exploring' | 'serious' | 'ready',
+    notes: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+
+    // Extract region from address (last part before postcode) or use a default
+    const addressParts = form.propertyAddress.split(',').map(s => s.trim());
+    const region = addressParts.length > 1 ? addressParts[addressParts.length - 1].replace(/\d{4}$/, '').trim() : 'QLD';
+
+    const payload = {
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phone: form.phone,
+      propertyAddress: form.propertyAddress,
+      coordinates: assessment.coordinates,
+      totalHectares: parseFloat(form.totalHectares) || assessment.totalHectares,
+      currentLandUse: form.currentLandUse,
+      interestLevel: form.interestLevel,
+      notes: form.notes || undefined,
+      region,
+      gridDistanceKm: assessment.nearestSubstation.distanceKm,
+      gridRating: assessment.overallViabilityScore,
+      assessmentSnapshot: assessment,
+    };
+    const res = await api.registerFarmer(payload as any);
+
+    setSubmitting(false);
+
+    if (res.success) {
+      setSubmitted(true);
+    } else {
+      setError(res.error || 'Something went wrong. Please try again.');
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="bg-white rounded-xl shadow-2xl w-[420px] p-8 text-center animate-in fade-in zoom-in-95 duration-300">
+          <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-gray-900 mb-2">Registration Received</h3>
+          <p className="text-sm text-gray-600 mb-6">
+            Thanks, {form.firstName}. We'll be in touch about solar opportunities for your property.
+            Your assessment data has been saved.
+          </p>
+          <button onClick={onClose} className="btn-primary px-6 text-sm">
+            Back to Map
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-xl shadow-2xl w-[480px] max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300">
+        {/* Header */}
+        <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <h3 className="text-base font-bold text-gray-900">Register Your Interest</h3>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Location: {assessment.coordinates.lat.toFixed(4)}, {assessment.coordinates.lng.toFixed(4)}
+            </p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Assessment summary */}
+        <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <div className="text-sm font-bold font-mono text-gray-900">
+                {formatAud(assessment.leaseEstimate.annualIncomeAud)}
+              </div>
+              <div className="text-xs text-gray-500">Est. annual lease</div>
+            </div>
+            <div>
+              <div className="text-sm font-bold font-mono text-brand-600">
+                {formatKm(assessment.nearestSubstation.distanceKm)}
+              </div>
+              <div className="text-xs text-gray-500">To {assessment.nearestSubstation.name}</div>
+            </div>
+            <div>
+              <RatingBadge rating={assessment.overallViabilityScore} />
+            </div>
+          </div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-medium text-gray-600 block mb-1">First name *</label>
+              <input
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                required
+                className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+                placeholder="John"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-600 block mb-1">Last name *</label>
+              <input
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+                required
+                className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+                placeholder="Smith"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-medium text-gray-600 block mb-1">Email *</label>
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+                placeholder="farmer@email.com"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-600 block mb-1">Phone *</label>
+              <input
+                name="phone"
+                type="tel"
+                value={form.phone}
+                onChange={handleChange}
+                required
+                className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+                placeholder="04XX XXX XXX"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-gray-600 block mb-1">Property address *</label>
+            <input
+              name="propertyAddress"
+              value={form.propertyAddress}
+              onChange={handleChange}
+              required
+              className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+              placeholder="123 Rural Rd, Dalby QLD 4405"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-medium text-gray-600 block mb-1">Property size (ha) *</label>
+              <input
+                name="totalHectares"
+                type="number"
+                min="1"
+                value={form.totalHectares}
+                onChange={handleChange}
+                required
+                className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-600 block mb-1">Current land use *</label>
+              <select
+                name="currentLandUse"
+                value={form.currentLandUse}
+                onChange={handleChange}
+                required
+                className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+              >
+                <option value="">Select...</option>
+                <option value="Cattle grazing">Cattle grazing</option>
+                <option value="Sheep grazing">Sheep grazing</option>
+                <option value="Dryland cropping">Dryland cropping</option>
+                <option value="Irrigated cropping">Irrigated cropping</option>
+                <option value="Mixed farming">Mixed farming</option>
+                <option value="Horticulture">Horticulture</option>
+                <option value="Unused / fallow">Unused / fallow</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-gray-600 block mb-1">Interest level</label>
+            <select
+              name="interestLevel"
+              value={form.interestLevel}
+              onChange={handleChange}
+              className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
+            >
+              <option value="exploring">Just exploring options</option>
+              <option value="serious">Seriously considering solar leasing</option>
+              <option value="ready">Ready to discuss with developers</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium text-gray-600 block mb-1">Notes (optional)</label>
+            <textarea
+              name="notes"
+              value={form.notes}
+              onChange={handleChange}
+              rows={2}
+              className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent resize-none"
+              placeholder="Anything else we should know about your property..."
+            />
+          </div>
+
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="btn-primary w-full text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            {submitting ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
+            ) : (
+              'Submit Registration'
+            )}
+          </button>
+
+          <p className="text-xs text-gray-400 text-center">
+            Your exact location is kept private. Developers see only an approximate region.
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// --- Utility ---
 
 /** Simple haversine distance in kilometers */
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
