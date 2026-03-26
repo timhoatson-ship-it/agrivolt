@@ -6,7 +6,32 @@ import farmersRouter from './routes/farmers.js';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
+// In production, Railway should set CORS_ORIGIN=https://agrivolt-navy.vercel.app (no wildcard)
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
+
+// Simple in-memory rate limiter
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 60; // requests per window
+const RATE_WINDOW = 60_000; // 1 minute
+
+function rateLimit(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    return next();
+  }
+  
+  if (entry.count >= RATE_LIMIT) {
+    res.status(429).json({ success: false, error: 'Too many requests. Please try again later.' });
+    return;
+  }
+  
+  entry.count++;
+  next();
+}
 
 // Middleware
 app.use(helmet());
@@ -16,6 +41,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 app.use(express.json({ limit: '1mb' }));
+app.use(rateLimit);
 
 // Health check
 app.get('/api/health', (_req, res) => {

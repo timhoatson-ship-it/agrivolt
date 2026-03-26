@@ -41,6 +41,14 @@
     backdrop-filter: blur(8px);
   }
 
+  /* Mobile assessment card adjustments */
+  @media (max-width: 639px) {
+    .assessment-card {
+      max-width: none;
+      border-radius: 12px 12px 0 0;
+    }
+  }
+
   /* Grid proximity badge */
   .badge-green {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;

@@ -2,30 +2,65 @@
 
 **Queensland Agrivoltaics Marketplace** — Connecting farmers with solar developers through spatial intelligence.
 
+🌐 **Live:** [agrivolt-navy.vercel.app](https://agrivolt-navy.vercel.app)
+
 ## What is AgriVolt?
 
 AgriVolt is a two-sided marketplace that helps Queensland farmers discover the agrivoltaic potential of their land and connects them with solar energy developers.
 
 **For Farmers:**
-- Drop a pin on your property
-- Instantly see estimated solar lease income, water savings, and shade premiums
+- Drop a pin on your property to get an instant site assessment
+- See estimated solar lease income, water savings, and shade premiums
 - All calculations powered by Australian government open spatial data
+- Register your interest directly through the platform
 
 **For Solar Developers:**
-- Access an anonymized heatmap of pre-willing farmers (locations randomized ±2km)
-- Filter by property size, solar exposure, grid distance, and planning constraints
+- Access an anonymized map of pre-willing farmers (locations randomized ±2km for privacy)
+- Filter properties by size, grid proximity rating, and distance to infrastructure
+- View clustered property markers with grid viability colour-coding
 - Unlock individual sites to see exact addresses and farmer contact details
+
+## Features
+
+### Map Explorer (`/explore`)
+- Interactive Mapbox GL map centred on Queensland
+- Three government data layers: Transmission Substations, Transmission Lines, Strategic Cropping Land
+- Click anywhere for instant site assessment (grid distance, solar exposure, land suitability)
+- Address search via Mapbox Geocoding API
+- Collapsible sidebar with layer controls and grid proximity legend
+- Mobile-responsive with toggleable sidebar
+
+### Developer Dashboard (`/dashboard`)
+- Anonymized property listings with clustered map markers
+- Filter by max grid distance, minimum hectares, and grid proximity rating
+- Property cards with grid viability indicators (green/amber/red)
+- "Unlock Site" gating for farmer privacy
+- Mobile-responsive with collapsible filter sidebar
+
+### Landing Page
+- Responsive hero section with animated assessment card mockup
+- Key market statistics ($6.9B, 30% water savings, 25yr lease)
+- Farmer registration modal with form validation
+- How It Works and Benefits sections
+
+### Technical Features
+- **Code splitting**: Map Explorer and Developer Dashboard are lazy-loaded (~40% smaller initial bundle)
+- **Error boundaries**: Graceful error recovery with user-friendly fallback UI
+- **Loading states**: Skeleton loaders and spinners during data fetches
+- **Rate limiting**: 60 requests/minute per IP on API endpoints
+- **Input sanitization**: HTML tag stripping on all user inputs
+- **Farmer anonymity**: Coordinates randomized ±2km, generalized land-use labels
 
 ## Architecture
 
 ```
-┌──────────────────┐     ┌──────────────────┐
-│   Vercel (CDN)   │────▶│  Railway (API)   │
-│  React + Vite    │     │  Express + PG     │
-│  Mapbox GL JS    │     │                  │
-│  Turf.js         │     │  /api/farmers    │
-│  Tailwind CSS    │     │  /api/properties │
-└──────────────────┘     └──────────────────┘
+┌──────────────────┐     ┌──────────────────┐     ┌─────────────┐
+│   Vercel (CDN)   │────▶│  Railway (API)   │────▶│ PostgreSQL  │
+│  React + Vite    │     │  Express + TS    │     │  (Railway)  │
+│  Mapbox GL JS    │     │                  │     │             │
+│  Turf.js         │     │  /api/farmers    │     │ 16 farmers  │
+│  Tailwind CSS    │     │  /api/properties │     │ (15 demo)   │
+└──────────────────┘     └──────────────────┘     └─────────────┘
          │
          ▼
 ┌──────────────────────────────────────┐
@@ -33,7 +68,6 @@ AgriVolt is a two-sided marketplace that helps Queensland farmers discover the a
 │  • Geoscience Australia (grid infra) │
 │  • QLD Spatial (cadastral, SCL)      │
 │  • Bureau of Meteorology (solar)     │
-│  • Ergon/Energex (grid capacity)     │
 └──────────────────────────────────────┘
 ```
 
@@ -87,15 +121,28 @@ DATABASE_URL=postgresql://postgres:dev@localhost:5432/agrivolt
 
 ## Deployment
 
-**Frontend → Vercel** (auto-deploy from GitHub)
+**Frontend → Vercel** (auto-deploy from GitHub `main` branch)
 - Root directory: `client`
 - Build command: `npm run build`
 - Output: `dist`
+- Environment: `VITE_MAPBOX_TOKEN`, `VITE_API_URL=/api`
 
-**Backend → Railway** (auto-deploy from GitHub)
+**Backend → Railway** (auto-deploy from GitHub `main` branch)
 - Root directory: `server`
 - Build command: `npm run build`
 - Start command: `node dist/index.js`
+- Environment: `DATABASE_URL` (linked from Railway Postgres addon), `CORS_ORIGIN`
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS |
+| Mapping | Mapbox GL JS, Turf.js (centroid-to-point) |
+| Backend | Express.js, TypeScript |
+| Database | PostgreSQL (Railway) |
+| Hosting | Vercel (frontend), Railway (API + DB) |
+| Data APIs | Geoscience Australia, QLD Spatial, BoM |
 
 ## License
 

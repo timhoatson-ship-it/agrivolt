@@ -44,7 +44,7 @@ export default function MapExplorer() {
   const mapRef = useRef<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [layers, setLayers] = useState<LayerConfig[]>(DEFAULT_LAYERS);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
   const [assessment, setAssessment] = useState<LandAssessment | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -331,13 +331,13 @@ export default function MapExplorer() {
   return (
     <div className="h-screen flex flex-col bg-gray-950">
       {/* Top bar */}
-      <div className="h-14 bg-gray-950 border-b border-gray-800 flex items-center px-4 gap-4 shrink-0 z-20">
+      <div className="h-14 bg-gray-950 border-b border-gray-800 flex items-center px-4 gap-2 sm:gap-4 shrink-0 z-20">
         <Link to="/" className="text-gray-400 hover:text-white transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-white font-display">AgriVolt</span>
-          <span className="text-xs text-gray-500">Explorer</span>
+          <span className="text-xs text-gray-500 hidden sm:inline">Explorer</span>
         </div>
 
         {/* Search bar */}
@@ -366,8 +366,11 @@ export default function MapExplorer() {
         {/* Layer sidebar */}
         <div
           className={cn(
-            'w-72 bg-gray-950 border-r border-gray-800 p-4 overflow-y-auto shrink-0 transition-all duration-300 z-10',
-            sidebarOpen ? 'translate-x-0' : '-translate-x-full absolute h-full'
+            'bg-gray-950 border-r border-gray-800 p-4 overflow-y-auto shrink-0 transition-all duration-300 z-30',
+            sidebarOpen 
+              ? 'w-72 translate-x-0' 
+              : '-translate-x-full w-0',
+            'absolute h-full lg:relative'
           )}
         >
           <div className="flex items-center justify-between mb-4">
@@ -431,6 +434,10 @@ export default function MapExplorer() {
           </p>
         </div>
 
+        {sidebarOpen && (
+          <div className="absolute inset-0 bg-black/40 z-20 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        )}
+
         {/* Map */}
         <div className="flex-1 relative">
           <div ref={mapContainer} className="absolute inset-0" />
@@ -472,7 +479,7 @@ function AssessmentCard({ assessment, onClose, onRegister }: { assessment: LandA
   const rating = assessment.overallViabilityScore;
 
   return (
-    <div className="absolute bottom-6 right-6 z-10 assessment-card w-[360px] animate-in slide-in-from-bottom-4 fade-in duration-300">
+    <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-10 assessment-card w-auto sm:w-[360px] animate-in slide-in-from-bottom-4 fade-in duration-300">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <RatingBadge rating={rating} />
@@ -640,7 +647,7 @@ function RegistrationModal({ assessment, onClose }: { assessment: LandAssessment
   if (submitted) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="bg-white rounded-xl shadow-2xl w-[420px] p-8 text-center animate-in fade-in zoom-in-95 duration-300">
+        <div className="bg-white rounded-xl shadow-2xl w-full max-w-[420px] mx-4 p-8 text-center animate-in fade-in zoom-in-95 duration-300">
           <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
           <h3 className="text-lg font-bold text-gray-900 mb-2">Registration Received</h3>
           <p className="text-sm text-gray-600 mb-6">
@@ -657,7 +664,7 @@ function RegistrationModal({ assessment, onClose }: { assessment: LandAssessment
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl w-[480px] max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-[480px] mx-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300">
         {/* Header */}
         <div className="p-5 border-b border-gray-100 flex items-center justify-between">
           <div>

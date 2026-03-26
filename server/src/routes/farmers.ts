@@ -6,6 +6,11 @@ import { eq } from 'drizzle-orm';
 
 const router = Router();
 
+/** Strip HTML tags and trim whitespace */
+function sanitize(input: string): string {
+  return input.replace(/<[^>]*>/g, '').trim();
+}
+
 const farmerSchema = z.object({
   firstName: z.string().min(1).max(100),
   lastName: z.string().min(1).max(100),
@@ -31,18 +36,26 @@ router.post('/', async (req, res) => {
   try {
     const data = farmerSchema.parse(req.body);
 
+    const safe = {
+      ...data,
+      firstName: sanitize(data.firstName),
+      lastName: sanitize(data.lastName),
+      propertyAddress: sanitize(data.propertyAddress),
+      notes: data.notes ? sanitize(data.notes) : null,
+    };
+
     const [result] = await db.insert(farmers).values({
-      firstName: data.firstName,
-      lastName: data.lastName,
+      firstName: safe.firstName,
+      lastName: safe.lastName,
       email: data.email,
       phone: data.phone,
-      propertyAddress: data.propertyAddress,
+      propertyAddress: safe.propertyAddress,
       lat: data.coordinates.lat,
       lng: data.coordinates.lng,
       totalHectares: data.totalHectares,
       currentLandUse: data.currentLandUse,
       interestLevel: data.interestLevel,
-      notes: data.notes || null,
+      notes: safe.notes,
       region: data.region || null,
       gridDistanceKm: data.gridDistanceKm || null,
       gridRating: data.gridRating || null,

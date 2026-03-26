@@ -27,6 +27,7 @@ export default function DeveloperDashboard() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const [selectedProperty, setSelectedProperty] = useState<AnonymizedProperty | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
   const [filters, setFilters] = useState({
     maxGridDistance: 30,
     minHectares: 0,
@@ -225,19 +226,30 @@ export default function DeveloperDashboard() {
         <Link to="/" className="text-gray-400 hover:text-gray-900 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <span className="text-sm font-bold text-gray-900 font-display">AgriVolt</span>
-          <span className="text-xs text-gray-400">Developer Dashboard</span>
+          <span className="text-xs text-gray-400 hidden sm:inline">Developer Dashboard</span>
+          <span className="text-xs text-gray-400 sm:hidden">Dev</span>
         </div>
         <div className="flex-1" />
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="text-gray-400 hover:text-gray-900 transition-colors p-2 lg:hidden"
+          title="Toggle filters"
+        >
+          <Filter className="w-5 h-5" />
+        </button>
         <div className="text-xs text-gray-500">
           {filtered.length} propert{filtered.length === 1 ? 'y' : 'ies'} available
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex relative overflow-hidden">
         {/* Filter sidebar */}
-        <div className="w-72 bg-gray-50 border-r border-gray-200 p-4 overflow-y-auto shrink-0">
+        <div className={cn(
+          'bg-gray-50 border-r border-gray-200 p-4 overflow-y-auto shrink-0 transition-all duration-300 z-30 absolute h-full lg:relative',
+          sidebarOpen ? 'w-72 translate-x-0' : '-translate-x-full w-0'
+        )}>
           <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 mb-4">
             <Filter className="w-4 h-4" /> Filters
           </h3>
@@ -339,13 +351,17 @@ export default function DeveloperDashboard() {
           </div>
         </div>
 
+        {sidebarOpen && (
+          <div className="absolute inset-0 bg-black/20 z-20 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        )}
+
         {/* Map */}
         <div className="flex-1 relative">
           <div ref={mapContainer} className="absolute inset-0" />
 
           {/* Selected property card */}
           {selectedProperty && (
-            <div className="absolute bottom-6 right-6 z-10 bg-white rounded-card shadow-assessment p-5 w-[340px] border border-gray-100">
+            <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-10 bg-white rounded-card shadow-assessment p-5 w-auto sm:w-[340px] border border-gray-100">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <RatingDot rating={selectedProperty.gridRating as GridProximityRating} />

@@ -12,10 +12,10 @@ export default function LandingPage() {
             <span className="text-xl font-bold text-white font-display">AgriVolt</span>
           </div>
           <div className="flex items-center gap-4">
-            <a href="#how-it-works" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors">
+            <a href="#how-it-works" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
               How It Works
             </a>
-            <a href="#benefits" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors">
+            <a href="#benefits" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
               Benefits
             </a>
             <Link
@@ -50,7 +50,7 @@ export default function LandingPage() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-32 grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h1 className="text-hero font-bold font-display text-white leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-hero font-bold font-display text-white leading-tight">
               Turn your{' '}
               <span className="text-brand-400">farm land</span>
               {' '}into{' '}
@@ -70,17 +70,17 @@ export default function LandingPage() {
               </a>
             </div>
             {/* Quick stats */}
-            <div className="mt-16 grid grid-cols-3 gap-8">
+            <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
               <div>
-                <div className="text-3xl font-bold text-brand-400 font-display">$6.9B</div>
+                <div className="text-2xl sm:text-3xl font-bold text-brand-400 font-display">$6.9B</div>
                 <div className="text-sm text-hero-text/50 mt-1">AU agrivoltaics market by 2031</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-brand-400 font-display">30%</div>
+                <div className="text-2xl sm:text-3xl font-bold text-brand-400 font-display">30%</div>
                 <div className="text-sm text-hero-text/50 mt-1">water savings from panel shading</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-brand-400 font-display">25yr</div>
+                <div className="text-2xl sm:text-3xl font-bold text-brand-400 font-display">25yr</div>
                 <div className="text-sm text-hero-text/50 mt-1">guaranteed lease income</div>
               </div>
             </div>
@@ -127,7 +127,7 @@ export default function LandingPage() {
       {/* How It Works */}
       <section id="how-it-works" className="py-24 bg-surface-light">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-display font-bold font-display text-center text-gray-900">
+          <h2 className="text-2xl sm:text-display font-bold font-display text-center text-gray-900">
             How it works
           </h2>
           <p className="mt-4 text-center text-gray-500 max-w-2xl mx-auto">
@@ -173,7 +173,7 @@ export default function LandingPage() {
       {/* Benefits */}
       <section id="benefits" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-display font-bold font-display text-center text-gray-900">
+          <h2 className="text-2xl sm:text-display font-bold font-display text-center text-gray-900">
             Why agrivoltaics?
           </h2>
 
@@ -234,7 +234,7 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="py-24 bg-hero-bg">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-display font-bold font-display text-white">
+          <h2 className="text-2xl sm:text-display font-bold font-display text-white">
             Ready to see what your land could earn?
           </h2>
           <p className="mt-4 text-lg text-hero-text/60">
