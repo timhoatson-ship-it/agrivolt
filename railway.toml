@@ -1,5 +1,5 @@
 [build]
-# Use the Dockerfile at repo root for proper monorepo context
+builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
