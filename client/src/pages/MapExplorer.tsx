@@ -22,8 +22,8 @@ const GA_SUBSTATIONS = `${GA_BASE}/0/query?where=1%3D1&outFields=*&f=geojson&res
 // Note: Layer 2 maxRecordCount is 2000, response ~9MB. Request only needed fields.
 const GA_TRANSMISSION = `${GA_BASE}/2/query?where=1%3D1&outFields=name,capacitykv,state&f=geojson&resultRecordCount=2000`;
 
-// WMS overlay URLs for constraint layers
-const QLD_SCL_WMS = 'https://spatial-gis.information.qld.gov.au/arcgis/services/Boundaries/AdminBoundariesFramework/MapServer/WMSServer';
+// ArcGIS REST export endpoint for Strategic Cropping Land overlay
+const QLD_SCL_EXPORT = 'https://spatial-gis.information.qld.gov.au/arcgis/rest/services/Boundaries/AdminBoundariesFramework/MapServer/export';
 
 interface LayerConfig {
   id: string;
@@ -160,19 +160,19 @@ export default function MapExplorer() {
           console.warn('Failed to load transmission lines:', err);
         }
 
-        // Add WMS layer for Strategic Cropping Land
-        map.addSource('scl-wms', {
+        // Add ArcGIS REST export layer for Strategic Cropping Land (Layer 105)
+        map.addSource('scl-arcgis', {
           type: 'raster',
           tiles: [
-            `${QLD_SCL_WMS}?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=105&STYLES=&FORMAT=image/png&TRANSPARENT=true&SRS=EPSG:3857&BBOX={bbox-epsg-3857}&WIDTH=256&HEIGHT=256`,
+            `${QLD_SCL_EXPORT}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:105&f=image`,
           ],
-          tileSize: 256,
+          tileSize: 512,
         });
         map.addLayer({
           id: 'scl-layer',
           type: 'raster',
-          source: 'scl-wms',
-          paint: { 'raster-opacity': 0.4 },
+          source: 'scl-arcgis',
+          paint: { 'raster-opacity': 0.5 },
           layout: { visibility: 'none' },
         });
       });
