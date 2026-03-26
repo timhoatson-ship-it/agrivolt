@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Layers, X, Search, Loader2, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Layers, X, Search, Loader2, CheckCircle2, MapPin as MapPinIcon, MousePointerClick } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatAud, formatKm, formatHa } from '@/lib/utils';
 import {
@@ -49,6 +49,7 @@ export default function MapExplorer() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(true);
 
   // Initialize map
   useEffect(() => {
@@ -268,6 +269,7 @@ export default function MapExplorer() {
     };
 
     setAssessment(assessmentResult);
+    setShowPrompt(false);
 
     // Add/move marker on map
     // Remove existing markers
@@ -447,6 +449,41 @@ export default function MapExplorer() {
               <div className="flex items-center gap-3 text-white">
                 <Loader2 className="w-5 h-5 animate-spin" />
                 <span className="text-sm">Loading map data...</span>
+              </div>
+            </div>
+          )}
+
+          {/* Getting started prompt — shown until first interaction */}
+          {showPrompt && !loading && !assessment && (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 w-[340px] max-w-[calc(100%-2rem)]">
+              <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-5 animate-in fade-in slide-in-from-top-2 duration-500">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center shrink-0 mt-0.5">
+                    <MousePointerClick className="w-5 h-5 text-brand-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-sm font-bold text-gray-900">Find your property</h3>
+                    <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                      Search for your address above, or click anywhere on the map to drop a pin. We'll instantly show you a solar lease estimate for that location.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowPrompt(false)}
+                    className="text-gray-300 hover:text-gray-500 transition-colors shrink-0"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="mt-3 flex items-center gap-4 text-xs text-gray-400 border-t border-gray-100 pt-3">
+                  <div className="flex items-center gap-1.5">
+                    <Search className="w-3 h-3" />
+                    <span>Search address</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <MapPinIcon className="w-3 h-3" />
+                    <span>Click to drop pin</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}

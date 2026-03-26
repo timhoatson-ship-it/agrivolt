@@ -5,19 +5,19 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="absolute top-0 left-0 right-0 z-10 px-6 py-4">
+      <nav className="absolute top-0 left-0 right-0 z-20 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AgriVoltLogo />
             <span className="text-xl font-bold text-white font-display">AgriVolt</span>
           </div>
           <div className="flex items-center gap-4">
-            <a href="#how-it-works" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
+            <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
               How It Works
-            </a>
-            <a href="#benefits" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
+            </button>
+            <button onClick={() => document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' })} className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
               Benefits
-            </a>
+            </button>
             <Link
               to="/explore"
               className="btn-primary text-sm"
@@ -65,9 +65,9 @@ export default function LandingPage() {
               <Link to="/explore" className="btn-primary text-base gap-2">
                 Check Your Land <ArrowRight className="w-4 h-4" />
               </Link>
-              <a href="#how-it-works" className="btn-secondary !bg-transparent !text-white !border-white/20 hover:!border-white/40 text-base">
+              <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="btn-secondary !bg-transparent !text-white !border-white/20 hover:!border-white/40 text-base">
                 Learn More
-              </a>
+              </button>
             </div>
             {/* Quick stats */}
             <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
