@@ -19,7 +19,8 @@ const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'YOUR_MAPBOX_TOKEN';
 // Geoscience Australia API endpoints
 const GA_BASE = 'https://services.ga.gov.au/gis/rest/services/National_Electricity_Infrastructure/MapServer';
 const GA_SUBSTATIONS = `${GA_BASE}/0/query?where=1%3D1&outFields=*&f=geojson&resultRecordCount=2000`;
-const GA_TRANSMISSION = `${GA_BASE}/2/query?where=1%3D1&outFields=*&f=geojson&resultRecordCount=5000`;
+// Note: Layer 2 maxRecordCount is 2000, response ~9MB. Request only needed fields.
+const GA_TRANSMISSION = `${GA_BASE}/2/query?where=1%3D1&outFields=name,capacitykv,state&f=geojson&resultRecordCount=2000`;
 
 // WMS overlay URLs for constraint layers
 const QLD_SCL_WMS = 'https://spatial-gis.information.qld.gov.au/arcgis/services/Boundaries/AdminBoundariesFramework/MapServer/WMSServer';
@@ -129,8 +130,8 @@ export default function MapExplorer() {
               source: 'transmission',
               paint: {
                 'line-color': '#ef4444',
-                'line-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 10, 2, 15, 3],
-                'line-opacity': 0.7,
+                'line-width': ['interpolate', ['linear'], ['zoom'], 4, 1.5, 8, 2.5, 12, 4],
+                'line-opacity': 0.85,
               },
             });
             // Labels for transmission lines at zoom
