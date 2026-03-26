@@ -1,0 +1,8 @@
+**/node_modules
+.git
+.github
+*.md
+client/src
+client/dist
+client/public
+server/dist
