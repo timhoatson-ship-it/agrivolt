@@ -584,6 +584,10 @@ export default function MapExplorer() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
         </div>
 
+        <Link to="/dashboard" className="text-gray-400 hover:text-white transition-colors text-xs font-medium hidden sm:inline">
+          Developers
+        </Link>
+
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="text-gray-400 hover:text-white transition-colors p-2"

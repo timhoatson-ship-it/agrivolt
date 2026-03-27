@@ -190,33 +190,41 @@ export default function DeveloperDashboard() {
   // Update map data when filtered properties change
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map) return;
 
-    const source = map.getSource('properties');
-    if (!source) return;
+    const updateSource = () => {
+      const source = map.getSource('properties');
+      if (!source) return;
 
-    const geojson = {
-      type: 'FeatureCollection' as const,
-      features: filtered.map(p => ({
-        type: 'Feature' as const,
-        geometry: { type: 'Point' as const, coordinates: [p.lng, p.lat] },
-        properties: {
-          id: p.id,
-          totalHectares: p.totalHectares,
-          currentLandUse: p.currentLandUse,
-          interestLevel: p.interestLevel,
-          region: p.region,
-          gridDistanceKm: p.gridDistanceKm,
-          gridRating: p.gridRating,
-          label: p.label,
-          registeredAt: p.registeredAt,
-          lat: p.lat,
-          lng: p.lng,
-        },
-      })),
+      const geojson = {
+        type: 'FeatureCollection' as const,
+        features: filtered.map(p => ({
+          type: 'Feature' as const,
+          geometry: { type: 'Point' as const, coordinates: [p.lng, p.lat] },
+          properties: {
+            id: p.id,
+            totalHectares: p.totalHectares,
+            currentLandUse: p.currentLandUse,
+            interestLevel: p.interestLevel,
+            region: p.region,
+            gridDistanceKm: p.gridDistanceKm,
+            gridRating: p.gridRating,
+            label: p.label,
+            registeredAt: p.registeredAt,
+            lat: p.lat,
+            lng: p.lng,
+          },
+        })),
+      };
+
+      (source as any).setData(geojson);
     };
 
-    (source as any).setData(geojson);
+    if (map.isStyleLoaded()) {
+      updateSource();
+    } else {
+      map.once('load', updateSource);
+    }
   }, [filtered]);
 
   return (

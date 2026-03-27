@@ -18,6 +18,9 @@ export default function LandingPage() {
             <button onClick={() => document.getElementById('benefits')?.scrollIntoView({ behavior: 'smooth' })} className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
               Benefits
             </button>
+            <Link to="/dashboard" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
+              Developers
+            </Link>
             <Link
               to="/explore"
               className="btn-primary text-sm"
