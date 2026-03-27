@@ -39,22 +39,13 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative bg-hero-bg overflow-hidden min-h-[90vh] flex items-center">
-        {/* Geometric background shapes */}
+        {/* Background image with translucent dark overlay */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-hero-shape/30 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-20 w-80 h-80 bg-hero-shape/20 rounded-full blur-2xl" />
-          <div className="absolute top-40 right-40 w-64 h-64 bg-brand-900/20 rounded-full blur-2xl" />
-          {/* Topographic line pattern (SVG) */}
-          <svg className="absolute inset-0 w-full h-full opacity-5" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="topo" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-                <path d="M0 100 Q50 80, 100 100 Q150 120, 200 100" stroke="#4ade80" fill="none" strokeWidth="0.5" />
-                <path d="M0 60 Q50 40, 100 60 Q150 80, 200 60" stroke="#4ade80" fill="none" strokeWidth="0.5" />
-                <path d="M0 140 Q50 120, 100 140 Q150 160, 200 140" stroke="#4ade80" fill="none" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#topo)" />
-          </svg>
+          <img src="/images/land_bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0F1A14]/85 via-[#0F1A14]/75 to-[#0F1A14]/90" />
+          {/* Subtle geometric glow accents */}
+          <div className="absolute top-20 left-10 w-96 h-96 bg-brand-500/8 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-20 w-80 h-80 bg-brand-500/5 rounded-full blur-2xl" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-32 grid lg:grid-cols-2 gap-16 items-center">
@@ -221,8 +212,10 @@ export default function LandingPage() {
       </section>
 
       {/* What is Agrivoltaics - Educational */}
-      <section id="what-is-agrivoltaics" className="py-24 bg-hero-bg">
-        <div className="max-w-7xl mx-auto px-6">
+      <section id="what-is-agrivoltaics" className="py-24 bg-hero-bg relative overflow-hidden">
+        <img src="/images/land_bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" />
+        <div className="absolute inset-0 bg-[#0F1A14]/90" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h2 className="text-2xl sm:text-display font-bold font-display text-white text-center">
             What is agrivoltaics?
           </h2>
