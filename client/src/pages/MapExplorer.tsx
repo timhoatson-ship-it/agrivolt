@@ -898,7 +898,7 @@ function AssessmentCard({ assessment, onClose, onRegister }: { assessment: LandA
           <p className="text-xs text-red-700 leading-relaxed">
             {assessment.gridConstraintWarning}
           </p>
-          <p className="text-[10px] text-red-500 mt-1">Source: Energy Queensland DAPR 2025</p>
+          <p className="text-[10px] text-red-500 mt-1">Source: Distribution Annual Planning Reports 2025 (QLD, NSW, VIC)</p>
         </div>
       )}
 

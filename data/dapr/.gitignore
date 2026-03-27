@@ -1,0 +1,4 @@
+# Large DAPR data files (>50MB) - keep locally, don't push
+*_load_trace_*.xlsx
+*_Interval_Data_*.xlsx
+*.pdf
