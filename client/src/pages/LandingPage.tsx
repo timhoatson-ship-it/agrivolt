@@ -99,13 +99,7 @@ export default function LandingPage() {
           <div className="relative hidden lg:block">
             <div className="bg-hero-shape/40 rounded-2xl p-1 shadow-2xl">
               <div className="bg-gray-900 rounded-xl overflow-hidden aspect-[4/3] flex items-center justify-center relative">
-                {/* QLD satellite preview — replace with Mapbox static image using your token */}
-                <div className="w-full h-full bg-gradient-to-br from-gray-800 via-green-900/30 to-gray-900 flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin className="w-12 h-12 text-brand-400/40 mx-auto" />
-                    <p className="text-xs text-gray-500 mt-2">Queensland, Australia</p>
-                  </div>
-                </div>
+                <img src="/images/hero_map_pin.jpg" alt="Aerial view of Australian farmland with location pin" className="w-full h-full object-cover" />
                 {/* Floating assessment card mockup */}
                 <div className="absolute bottom-6 left-6 right-6 bg-white rounded-card shadow-assessment p-5">
                   <div className="flex items-center gap-2 mb-3">
@@ -240,6 +234,7 @@ export default function LandingPage() {
 
           <div className="mt-16 grid md:grid-cols-2 gap-12 items-start">
             <div>
+              <img src="/images/agrivolt_sheep_grazing.jpg" alt="Merino sheep grazing under elevated solar panels on Australian farmland" className="w-full h-48 object-cover rounded-xl mb-6" />
               <h3 className="text-lg font-bold font-display text-white mb-4">For graziers</h3>
               <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
                 Sheep and cattle graze freely beneath elevated solar panels. The shade reduces heat
@@ -256,6 +251,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div>
+              <img src="/images/agrivolt_crops_under_solar.jpg" alt="Vegetable crops growing under solar panels with drip irrigation" className="w-full h-48 object-cover rounded-xl mb-6" />
               <h3 className="text-lg font-bold font-display text-white mb-4">For croppers &amp; horticulture</h3>
               <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
                 International research shows enhanced crop yields for shade-tolerant produce including
@@ -518,8 +514,9 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-hero-bg">
-        <div className="max-w-3xl mx-auto px-6 text-center">
+      <section className="py-24 bg-hero-bg relative overflow-hidden">
+        <img src="/images/agrivolt_aerial_solar_farm.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+        <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-2xl sm:text-display font-bold font-display text-white">
             Ready to see what your land could earn?
           </h2>
