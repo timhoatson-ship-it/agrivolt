@@ -49,10 +49,21 @@ interface LayerConfig {
   description: string;
 }
 
+interface ScreeningSubstation {
+  name: string;
+  lat: number;
+  lng: number;
+  distanceToCenter: number;
+  constrained: boolean;
+  constraintNote?: string;
+}
+
 interface ScreeningResult {
   polygonAreaHa: number;
-  substationsInside: { name: string; distanceToCenter: number; constrained: boolean; constraintNote?: string }[];
-  substationsNearby: { name: string; distanceToCenter: number; constrained: boolean; constraintNote?: string }[];
+  centerLat: number;
+  centerLng: number;
+  substationsInside: ScreeningSubstation[];
+  substationsNearby: ScreeningSubstation[];
 }
 
 const DEFAULT_LAYERS: LayerConfig[] = [
@@ -616,8 +627,10 @@ export default function MapExplorer() {
       const pt = turf.point([sLng, sLat]);
       const distKm = turf.distance(centroid, pt, { units: 'kilometers' });
       const isConstrained = feat.properties?.constrained === true || feat.properties?.status === 'constrained';
-      const entry = {
+      const entry: ScreeningSubstation = {
         name: feat.properties?.name || 'Unknown',
+        lat: sLat,
+        lng: sLng,
         distanceToCenter: Math.round(distKm * 10) / 10,
         constrained: isConstrained,
         constraintNote: feat.properties?.constraint_note || feat.properties?.notes || undefined,
@@ -646,7 +659,7 @@ export default function MapExplorer() {
           const alreadyCounted = [...substationsInside, ...substationsNearby].some(s => s.name === name);
           if (alreadyCounted) continue;
 
-          const entry = { name, distanceToCenter: Math.round(distKm * 10) / 10, constrained: false };
+          const entry: ScreeningSubstation = { name, lat: coords[1], lng: coords[0], distanceToCenter: Math.round(distKm * 10) / 10, constrained: false };
           if (turf.booleanPointInPolygon(pt, polygon)) {
             substationsInside.push(entry);
           } else if (distKm <= 30) {
@@ -659,7 +672,7 @@ export default function MapExplorer() {
     substationsInside.sort((a, b) => a.distanceToCenter - b.distanceToCenter);
     substationsNearby.sort((a, b) => a.distanceToCenter - b.distanceToCenter);
 
-    setScreeningResult({ polygonAreaHa: areaHa, substationsInside, substationsNearby });
+    setScreeningResult({ polygonAreaHa: areaHa, centerLat: cLat, centerLng: cLng, substationsInside, substationsNearby });
   }, []);
 
   const toggleDrawMode = useCallback(async () => {
@@ -712,11 +725,11 @@ export default function MapExplorer() {
   const exportScreeningCSV = useCallback(() => {
     if (!screeningResult) return;
     const rows = [
-      ['Type', 'Substation', 'Distance to Center (km)', 'Constrained', 'Notes'],
-      ...screeningResult.substationsInside.map(s => ['Inside polygon', s.name, String(s.distanceToCenter), s.constrained ? 'Yes' : 'No', s.constraintNote || '']),
-      ...screeningResult.substationsNearby.map(s => ['Nearby (<30km)', s.name, String(s.distanceToCenter), s.constrained ? 'Yes' : 'No', s.constraintNote || '']),
+      ['Type', 'Substation', 'Latitude', 'Longitude', 'Distance to Center (km)', 'Constrained', 'Notes'],
+      ...screeningResult.substationsInside.map(s => ['Inside polygon', s.name, String(s.lat), String(s.lng), String(s.distanceToCenter), s.constrained ? 'Yes' : 'No', s.constraintNote || '']),
+      ...screeningResult.substationsNearby.map(s => ['Nearby (<30km)', s.name, String(s.lat), String(s.lng), String(s.distanceToCenter), s.constrained ? 'Yes' : 'No', s.constraintNote || '']),
     ];
-    const header = `Polygon Area: ${screeningResult.polygonAreaHa} hectares\n`;
+    const header = `Polygon Area: ${screeningResult.polygonAreaHa} hectares\nPolygon Center: ${screeningResult.centerLat.toFixed(6)}, ${screeningResult.centerLng.toFixed(6)}\n`;
     const csv = header + rows.map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -748,18 +761,20 @@ export default function MapExplorer() {
 
     const layerIds = layerGroups[layerId] || [`${layerId}-layer`];
 
+    // Use React state as source of truth (already toggled above)
+    const layerState = layers.find(l => l.id === layerId);
+    // After setLayers, the NEW state is the opposite of what layerState currently shows
+    const shouldBeVisible = layerState ? !layerState.visible : true;
+    const newVis = shouldBeVisible ? 'visible' : 'none';
+
     for (const lid of layerIds) {
       if (!map.getLayer(lid)) continue;
-      const current = map.getLayoutProperty(lid, 'visibility');
-      const newVis = current === 'visible' ? 'none' : 'visible';
       map.setLayoutProperty(lid, 'visibility', newVis);
     }
 
     // Also toggle labels if they exist and aren't already in the group
     const labelsId = `${layerId}-labels`;
     if (map.getLayer(labelsId) && !layerGroups[layerId]?.includes(labelsId)) {
-      const current = map.getLayoutProperty(labelsId, 'visibility');
-      const newVis = current === 'visible' ? 'none' : 'visible';
       map.setLayoutProperty(labelsId, 'visibility', newVis);
     }
   };
