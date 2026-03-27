@@ -66,7 +66,7 @@ export default function LandingPage() {
               <span className="text-brand-400">solar income</span>
             </h1>
             <p className="mt-6 text-lg text-hero-text/70 max-w-lg leading-relaxed">
-              AgriVolt connects Queensland farmers with solar developers.
+              AgriVolt connects Australian farmers with solar developers.
               Discover your property's agrivoltaic potential — guaranteed passive income,
               water savings, and shade premiums.
             </p>
@@ -101,7 +101,7 @@ export default function LandingPage() {
               <div className="bg-gray-900 rounded-xl overflow-hidden aspect-[4/3] flex items-center justify-center relative">
                 <img src="/images/hero_map_pin.jpg" alt="Aerial view of Australian farmland with location pin" className="w-full h-full object-cover" />
                 {/* Floating assessment card mockup */}
-                <div className="absolute bottom-6 left-6 right-6 bg-white rounded-card shadow-assessment p-5">
+                <div className="absolute bottom-6 left-6 right-6 bg-white rounded-xl shadow-2xl p-5 border border-gray-100">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="badge-green">High Viability</span>
                     <span className="text-xs text-gray-500">2.3km from substation</span>
@@ -158,7 +158,7 @@ export default function LandingPage() {
                 description: 'Register your interest and we connect you with vetted solar developers looking for agrivoltaic-ready land in your region.',
               },
             ].map(({ icon: Icon, step, title, description }) => (
-              <div key={step} className="bg-white rounded-card shadow-card p-8 hover:shadow-card-hover transition-shadow">
+              <div key={step} className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-all">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center">
                     <Icon className="w-5 h-5 text-brand-600" />
@@ -208,7 +208,7 @@ export default function LandingPage() {
               },
             ].map(({ icon: Icon, title, value, description }) => (
               <div key={title} className="text-center">
-                <div className="w-14 h-14 rounded-full bg-brand-50 flex items-center justify-center mx-auto">
+                <div className="w-16 h-16 rounded-2xl bg-brand-50 flex items-center justify-center mx-auto">
                   <Icon className="w-7 h-7 text-brand-600" />
                 </div>
                 <h3 className="mt-4 font-bold font-display text-gray-900">{title}</h3>
@@ -234,14 +234,14 @@ export default function LandingPage() {
 
           <div className="mt-16 grid md:grid-cols-2 gap-12 items-start">
             <div>
-              <img src="/images/agrivolt_sheep_grazing.jpg" alt="Merino sheep grazing under elevated solar panels on Australian farmland" className="w-full h-48 object-cover rounded-xl mb-6" />
+              <img src="/images/agrivolt_sheep_grazing.jpg" alt="Merino sheep grazing under elevated solar panels on Australian farmland" className="w-full h-56 object-cover rounded-xl mb-6 shadow-lg" />
               <h3 className="text-lg font-bold font-display text-white mb-4">For graziers</h3>
-              <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
+              <p className="text-sm text-hero-text/70 leading-relaxed mb-4">
                 Sheep and cattle graze freely beneath elevated solar panels. The shade reduces heat
                 stress, improves pasture quality, and concentrates rainfall runoff into semi-irrigated
                 strips — extending green feed availability during dry periods.
               </p>
-              <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
+              <p className="text-sm text-hero-text/70 leading-relaxed mb-4">
                 According to the <a href="https://www.energyco.nsw.gov.au/agrivoltaics-handbook" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline">Agrivoltaics Handbook</a> (Dec 2025),
                 one Dubbo grazier reports carrying 25% more sheep overall under panels, with improved
                 wool quality and quantity attributed to protection from heat, dust, and airborne contaminants.
@@ -251,14 +251,14 @@ export default function LandingPage() {
               </p>
             </div>
             <div>
-              <img src="/images/agrivolt_crops_under_solar.jpg" alt="Vegetable crops growing under solar panels with drip irrigation" className="w-full h-48 object-cover rounded-xl mb-6" />
+              <img src="/images/agrivolt_crops_under_solar.jpg" alt="Vegetable crops growing under solar panels with drip irrigation" className="w-full h-56 object-cover rounded-xl mb-6 shadow-lg" />
               <h3 className="text-lg font-bold font-display text-white mb-4">For croppers &amp; horticulture</h3>
-              <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
+              <p className="text-sm text-hero-text/70 leading-relaxed mb-4">
                 International research shows enhanced crop yields for shade-tolerant produce including
                 berries, leafy greens, asparagus, and garlic. Panel shading can reduce irrigation
                 requirements by up to 20% in arid regions, while protecting crops from frost and hail damage.
               </p>
-              <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
+              <p className="text-sm text-hero-text/70 leading-relaxed mb-4">
                 In Australia, early trials show promise for vineyards and certain vegetables, though
                 research tailored to Australian conditions is still developing. The key benefit for many
                 Australian farmers is the drought-proof secondary income from solar lease payments.
@@ -277,7 +277,7 @@ export default function LandingPage() {
               { value: '20%', label: 'Reduction in irrigation water under panels', source: 'Elamri et al. (2018)' },
               { value: '$100–$250', label: 'Per hectare slashing cost avoided by grazing', source: 'Agrivoltaics Handbook (2025 estimates)' },
             ].map(({ value, label, source }) => (
-              <div key={label} className="bg-gray-900/50 rounded-xl p-5 border border-gray-800/50">
+              <div key={label} className="bg-gray-900/60 rounded-xl p-5 border border-gray-700/50 shadow-lg">
                 <div className="text-xl font-bold text-brand-400 font-display">{value}</div>
                 <div className="text-xs text-hero-text/50 mt-1">{label}</div>
                 <div className="text-[10px] text-hero-text/30 mt-2 italic">{source}</div>
@@ -354,7 +354,7 @@ export default function LandingPage() {
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white rounded-card shadow-card p-6 hover:shadow-card-hover transition-shadow block"
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all block"
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-mono text-brand-600">{year}</span>
@@ -432,7 +432,7 @@ export default function LandingPage() {
                 description: 'A typical solar lease runs 25-30 years. Ensure your agreement covers who is responsible for removing infrastructure and restoring the land at the end of the term.',
               },
             ].map(({ title, description }) => (
-              <div key={title} className="bg-white rounded-card shadow-card p-6">
+              <div key={title} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center gap-2 mb-3">
                   <Shield className="w-5 h-5 text-brand-600 shrink-0" />
                   <h3 className="text-sm font-bold font-display text-gray-900">{title}</h3>
@@ -480,7 +480,7 @@ export default function LandingPage() {
               'Can the developer transfer the agreement to another company without your consent?',
               'What happens to the land and infrastructure at the end of the lease term?',
             ].map((question, i) => (
-              <div key={i} className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-100">
+              <div key={i} className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                 <div className="w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-xs font-bold text-brand-700">{i + 1}</span>
                 </div>
@@ -500,7 +500,7 @@ export default function LandingPage() {
       </section>
 
       {/* Data Sources Trust Section */}
-      <section className="py-16 bg-surface-light border-t border-gray-100">
+      <section className="py-12 bg-surface-light border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <p className="text-sm text-gray-500 mb-6">Powered by trusted Australian government data</p>
           <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-xs text-gray-400 font-medium">
@@ -515,7 +515,8 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section className="py-24 bg-hero-bg relative overflow-hidden">
-        <img src="/images/agrivolt_aerial_solar_farm.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+        <img src="/images/agrivolt_aerial_solar_farm.jpg" alt="" className="absolute inset-0 w-full h-full object-cover opacity-15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0F2027] via-[#0F2027]/80 to-[#0F2027]/60" />
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
           <h2 className="text-2xl sm:text-display font-bold font-display text-white">
             Ready to see what your land could earn?
