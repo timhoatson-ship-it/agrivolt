@@ -21,6 +21,9 @@ export default function LandingPage() {
             <Link to="/dashboard" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
               Developers
             </Link>
+            <button onClick={() => document.getElementById('know-your-rights')?.scrollIntoView({ behavior: 'smooth' })} className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden lg:inline">
+              Your Rights
+            </button>
             <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
               About
             </button>
@@ -308,6 +311,13 @@ export default function LandingPage() {
                 year: '2025',
               },
               {
+                title: 'Renewable Energy Landholder Guide',
+                org: 'NSW Farmers & EnergyCo',
+                description: 'Comprehensive guide for landholders considering hosting renewable energy projects. Covers agreements, rights, negotiations, and checklists.',
+                url: 'https://www.nswfarmers.org.au/NSWFA/Posts/Energy-Transmission/NSW-Renewable-Energy-Landholder-Guide.aspx',
+                year: '2025',
+              },
+              {
                 title: 'National Electricity Infrastructure',
                 org: 'Geoscience Australia',
                 description: 'Transmission substations, power stations, and high-voltage transmission lines across Australia. Updated regularly.',
@@ -384,6 +394,111 @@ export default function LandingPage() {
           <p className="mt-4 text-sm text-gray-500">
             Questions? Contact us at{' '}
             <a href="mailto:tim.hoatson@propine.com.au" className="text-brand-600 underline">tim.hoatson@propine.com.au</a>
+          </p>
+        </div>
+      </section>
+
+      {/* Know Your Rights */}
+      <section id="know-your-rights" className="py-24 bg-surface-light border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-2xl sm:text-display font-bold font-display text-center text-gray-900">
+            Know your rights as a landholder
+          </h2>
+          <p className="mt-4 text-center text-gray-500 max-w-2xl mx-auto">
+            If a solar developer approaches you, it's important to understand your position.
+            These rights apply whether you're in QLD, NSW, or Victoria.
+          </p>
+
+          <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                title: 'You can say no',
+                description: 'You are not required to sign an agreement with a renewable energy developer. The decision to host infrastructure on your land is voluntary and at your discretion.',
+              },
+              {
+                title: 'No obligation to rush',
+                description: 'There are no legal requirements for you to meet certain timelines. Take the time you need to seek independent advice before signing anything.',
+              },
+              {
+                title: 'No access without agreement',
+                description: 'A developer cannot undertake any activities on your land without your written agreement. This includes surveys, soil testing, and feasibility studies.',
+              },
+              {
+                title: 'Get independent advice',
+                description: 'Ensure your legal advisor has experience in renewable energy contracts. The developer\'s agreements are prepared for the developer, not for you.',
+              },
+              {
+                title: 'Understand confidentiality clauses',
+                description: 'Some agreements include confidentiality provisions. Ensure these don\'t prevent you from discussing the project with your family, neighbours, or financial advisors.',
+              },
+              {
+                title: 'Plan for decommissioning',
+                description: 'A typical solar lease runs 25-30 years. Ensure your agreement covers who is responsible for removing infrastructure and restoring the land at the end of the term.',
+              },
+            ].map(({ title, description }) => (
+              <div key={title} className="bg-white rounded-card shadow-card p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="w-5 h-5 text-brand-600 shrink-0" />
+                  <h3 className="text-sm font-bold font-display text-gray-900">{title}</h3>
+                </div>
+                <p className="text-xs text-gray-500 leading-relaxed">{description}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-8 text-xs text-gray-400 text-center max-w-2xl mx-auto">
+            Informed by the{' '}
+            <a href="https://www.nswfarmers.org.au/NSWFA/Posts/Energy-Transmission/NSW-Renewable-Energy-Landholder-Guide.aspx" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">
+              NSW Renewable Energy and Transmission Landholder Guide
+            </a>{' '}
+            (2025, NSW Farmers / EnergyCo) and the{' '}
+            <a href="https://www.energyco.nsw.gov.au/agrivoltaics-handbook" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">
+              Agrivoltaics Handbook
+            </a>{' '}
+            (2025, Progressive Agriculture / Farm Renewables Consulting).
+            This is general information only — seek independent legal and financial advice for your situation.
+          </p>
+        </div>
+      </section>
+
+      {/* Questions to Ask */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-2xl sm:text-display font-bold font-display text-center text-gray-900">
+            Questions to ask a solar developer
+          </h2>
+          <p className="mt-4 text-center text-gray-500 max-w-2xl mx-auto">
+            Before signing any agreement, use this checklist to evaluate who you're working with.
+          </p>
+
+          <div className="mt-12 max-w-3xl mx-auto space-y-3">
+            {[
+              'Can you find details of the company, directors and ABN via an ASIC search?',
+              'Does the company have a publicly available annual report and a corporate website listing similar projects?',
+              'Does the company have experience in agrivoltaics (co-locating agriculture with solar)?',
+              'Will you have a dedicated point of contact throughout the project?',
+              'Will they contribute to the cost of your independent legal and financial advice?',
+              'Have they explained the potential benefits AND impacts for you, your neighbours, and your community?',
+              'Do they have a community benefit sharing model?',
+              'Can they take you to visit a similar project that is already operational?',
+              'Can the developer transfer the agreement to another company without your consent?',
+              'What happens to the land and infrastructure at the end of the lease term?',
+            ].map((question, i) => (
+              <div key={i} className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <div className="w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-brand-700">{i + 1}</span>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">{question}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-8 text-xs text-gray-400 text-center max-w-2xl mx-auto">
+            Adapted from the landholder checklists in the{' '}
+            <a href="https://www.nswfarmers.org.au/NSWFA/Posts/Energy-Transmission/NSW-Renewable-Energy-Landholder-Guide.aspx" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">
+              NSW Renewable Energy and Transmission Landholder Guide
+            </a>{' '}
+            (2025, NSW Farmers / EnergyCo). Not legal advice — consult a qualified professional.
           </p>
         </div>
       </section>

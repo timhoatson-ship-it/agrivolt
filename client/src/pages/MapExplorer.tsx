@@ -789,8 +789,10 @@ function AssessmentCard({ assessment, onClose, onRegister }: { assessment: LandA
         <DetailRow label="Usable hectares" value={formatHa(assessment.leaseEstimate.usableHectares)} />
         <DetailRow label="Lease rate" value={`${formatAud(assessment.leaseEstimate.leaseRatePerHa)}/ha/yr`} />
         <DetailRow label="25-year total" value={formatAud(assessment.leaseEstimate.totalLifetimeIncomeAud)} highlight />
+        <DetailRow label="Typical grazing lease" value="$35–75/ha/yr" />
         <DetailRow label="Water cost savings" value={`${formatAud(assessment.waterSavings.annualCostSavingsAud)}/yr`} />
         <DetailRow label="Evaporation reduction" value={`${assessment.waterSavings.evaporationReductionPct}%`} />
+        <DetailRow label="Slashing cost avoided" value="$100–250/ha/yr" />
       </div>
 
       {/* Constraints */}
