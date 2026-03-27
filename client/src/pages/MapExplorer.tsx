@@ -12,6 +12,7 @@ import {
 } from '@/lib/calculator';
 import { api } from '@/lib/api';
 import type { LandAssessment, GridProximityRating } from '@shared/types';
+import gridConstraintsData from '@/data/grid-constraints.json';
 
 // Mapbox token — replace with your own or set VITE_MAPBOX_TOKEN env var
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'YOUR_MAPBOX_TOKEN';
@@ -49,6 +50,7 @@ const DEFAULT_LAYERS: LayerConfig[] = [
   { id: 'flood', label: 'Flood Zones (QFAO)', visible: false, color: '#3b82f6', description: 'Queensland Floodplain Assessment Overlay' },
   { id: 'cadastral', label: 'Property Boundaries', visible: false, color: '#6b7280', description: 'QLD cadastral parcels (zoom in to see)' },
   { id: 'powerstations', label: 'Power Stations', visible: false, color: '#8b5cf6', description: 'Major power stations (Geoscience Australia)' },
+  { id: 'gridconstraints', label: 'Grid Constraints (DAPR)', visible: false, color: '#dc2626', description: 'Capacity-constrained substations (Energex/Ergon 2025)' },
 ];
 
 async function fetchSolarData(lat: number, lng: number): Promise<{ solarMjM2: number; etMm: number }> {
@@ -325,6 +327,43 @@ export default function MapExplorer() {
         } catch (err) {
           console.warn('Failed to load power stations:', err);
         }
+
+        // Grid Constraints — DAPR 2025 constrained substations (Energex + Ergon)
+        map.addSource('gridconstraints', {
+          type: 'geojson',
+          data: gridConstraintsData as any,
+        });
+        map.addLayer({
+          id: 'gridconstraints-layer',
+          type: 'circle',
+          source: 'gridconstraints',
+          paint: {
+            'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 6, 10, 12, 15, 18],
+            'circle-color': '#dc2626',
+            'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 2,
+            'circle-opacity': 0.85,
+          },
+          layout: { visibility: 'none' },
+        });
+        map.addLayer({
+          id: 'gridconstraints-labels',
+          type: 'symbol',
+          source: 'gridconstraints',
+          minzoom: 8,
+          layout: {
+            'text-field': ['get', 'name'],
+            'text-size': 10,
+            'text-offset': [0, 2],
+            'text-anchor': 'top',
+            visibility: 'none',
+          },
+          paint: {
+            'text-color': '#dc2626',
+            'text-halo-color': '#000000',
+            'text-halo-width': 1,
+          },
+        });
       });
 
       // Click handler for pin-drop assessment
@@ -375,6 +414,22 @@ export default function MapExplorer() {
 
     const gridRating = getGridProximityRating(nearestDist);
 
+    // Check if nearest substation is grid-constrained (DAPR 2025 data)
+    let gridConstraintWarning: string | null = null;
+    const constraintFeatures = (gridConstraintsData as any).features || [];
+    for (const cf of constraintFeatures) {
+      if (!cf.geometry?.coordinates) continue;
+      const [cLng, cLat] = cf.geometry.coordinates;
+      const cDist = haversineKm(lat, lng, cLat, cLng);
+      if (cDist < 30) { // Within 30km of a constrained substation
+        const cName = cf.properties?.name || 'Unknown';
+        const cNetwork = cf.properties?.network || '';
+        const cLimitations = cf.properties?.limitations || '';
+        gridConstraintWarning = `Nearest constrained substation: ${cName} (${cNetwork}, ${Math.round(cDist)}km away). Limitation: ${cLimitations || 'Capacity constrained'}. Grid connection may require network augmentation.`;
+        break;
+      }
+    }
+
     // For MVP, use a default property size (will be replaced by cadastral lookup)
     const totalHectares = 50; // Default assumption
     const isScl = false; // Would query SCL layer
@@ -419,6 +474,7 @@ export default function MapExplorer() {
       waterSavings,
       shadePremium,
       overallViabilityScore: overallViability,
+      gridConstraintWarning: gridConstraintWarning || undefined,
       assessedAt: new Date().toISOString(),
     };
 
@@ -727,6 +783,17 @@ function AssessmentCard({ assessment, onClose, onRegister }: { assessment: LandA
         </div>
       )}
 
+      {/* Grid constraint warning */}
+      {assessment.gridConstraintWarning && (
+        <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
+          <div className="text-xs font-semibold text-red-800 mb-1">⚠ Grid Capacity Warning</div>
+          <p className="text-xs text-red-700 leading-relaxed">
+            {assessment.gridConstraintWarning}
+          </p>
+          <p className="text-[10px] text-red-500 mt-1">Source: Energy Queensland DAPR 2025</p>
+        </div>
+      )}
+
       {/* CTA */}
       <button onClick={onRegister} className="btn-primary w-full mt-4 text-sm">
         Register Interest
@@ -737,7 +804,7 @@ function AssessmentCard({ assessment, onClose, onRegister }: { assessment: LandA
 
       <div className="mt-3 pt-3 border-t border-gray-100">
         <p className="text-[10px] text-gray-400 text-center leading-relaxed">
-          Data: Geoscience Australia &middot; Bureau of Meteorology &middot; QLD Spatial Services
+          Data: Geoscience Australia &middot; BOM &middot; QLD Spatial &middot; Energy QLD DAPR 2025
         </p>
         <p className="text-[10px] text-gray-400 text-center">
           Estimates are indicative only and based on publicly available data. Not financial advice.

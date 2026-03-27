@@ -102,6 +102,8 @@ export interface LandAssessment {
   waterSavings: WaterSavingsEstimate;
   shadePremium: ShadePremium;
   overallViabilityScore: GridProximityRating;
+  /** Warning if site is near a capacity-constrained substation (DAPR data) */
+  gridConstraintWarning?: string;
   assessedAt: string; // ISO timestamp
 }
 
