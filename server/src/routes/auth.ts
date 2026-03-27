@@ -63,11 +63,13 @@ router.post('/register', async (req: Request, res: Response) => {
     if (err instanceof z.ZodError) {
       return res.status(400).json({ success: false, error: 'Validation error', details: err.errors });
     }
-    if ((err as any)?.code === '23505') {
+    const pgCode = (err as any)?.code;
+    const pgDetail = (err as any)?.detail || (err as any)?.message || '';
+    if (pgCode === '23505' && String(pgDetail).includes('email')) {
       return res.status(409).json({ success: false, error: 'An account with this email already exists.' });
     }
     console.error('[Auth] Register error:', err);
-    res.status(500).json({ success: false, error: 'Internal server error' });
+    res.status(500).json({ success: false, error: 'Registration failed. Please try again.' });
   }
 });
 
