@@ -92,7 +92,7 @@ export default function PrivacyPolicy() {
               <li><strong>Deletion</strong> &mdash; Request that we delete all your personal data from our systems</li>
             </ul>
             <p className="text-gray-700 leading-relaxed mt-2">
-              To exercise any of these rights, contact us at the email address below.
+              To exercise any of these rights, contact us via the contact form on our website.
               We will respond to your request within 30 days.
             </p>
           </section>
@@ -116,13 +116,13 @@ export default function PrivacyPolicy() {
             <h2 className="text-xl font-semibold text-gray-900 mt-8 mb-3">Contact</h2>
             <p className="text-gray-700 leading-relaxed">
               If you have questions about this privacy policy, wish to exercise your rights,
-              or want to make a complaint about how we handle your personal information, please contact:
+              or want to make a complaint about how we handle your personal information, please
+              contact us via the <Link to="/contact" className="text-brand-600 hover:text-brand-700 underline">contact form on our website</Link>.
             </p>
             <p className="text-gray-700 mt-2">
-              <strong>Tim Hoatson</strong><br />
-              Email:{' '}
-              <a href="mailto:tim.hoatson@propine.com.au" className="text-brand-600 hover:text-brand-700 underline">
-                tim.hoatson@propine.com.au
+              <strong>Agentika</strong><br />
+              <a href="https://agentika.com.au" target="_blank" rel="noopener noreferrer" className="text-brand-600 hover:text-brand-700 underline">
+                agentika.com.au
               </a>
             </p>
           </section>

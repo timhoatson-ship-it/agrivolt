@@ -376,7 +376,7 @@ export default function LandingPage() {
             About AgriVolt
           </h2>
           <p className="mt-6 text-gray-600 leading-relaxed">
-            AgriVolt was built by <a href="https://propine.com.au" target="_blank" rel="noopener noreferrer" className="text-brand-600 font-medium underline">Propine</a> to
+            AgriVolt was built by <a href="https://agentika.com.au" target="_blank" rel="noopener noreferrer" className="text-brand-600 font-medium underline">Agentika</a> to
             solve the #1 bottleneck in Australia's renewable energy transition: connecting farmers
             with solar developers. The platform uses publicly available government spatial data to
             give landholders a free, instant assessment of their property's agrivoltaic potential —
@@ -387,10 +387,9 @@ export default function LandingPage() {
             Services, and Energy Queensland's Distribution Annual Planning Reports. Estimates are
             indicative only and should not be relied upon as financial advice.
           </p>
-          <p className="mt-4 text-sm text-gray-500">
-            Questions? Contact us at{' '}
-            <a href="mailto:tim.hoatson@propine.com.au" className="text-brand-600 underline">tim.hoatson@propine.com.au</a>
-          </p>
+          <Link to="/contact" className="inline-flex items-center gap-2 mt-4 text-sm text-brand-600 font-medium hover:text-brand-700 transition-colors">
+            Get in touch <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 
@@ -548,7 +547,7 @@ export default function LandingPage() {
               Not financial advice. Always consult a qualified professional.
             </p>
             <p className="text-xs text-gray-600">
-              &copy; {new Date().getFullYear()} AgriVolt &middot; Queensland, Australia
+              &copy; {new Date().getFullYear()} AgriVolt &middot; Agentika &middot; Australia
             </p>
           </div>
         </div>

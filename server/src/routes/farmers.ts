@@ -126,6 +126,35 @@ router.get('/properties', async (_req, res) => {
   }
 });
 
+// POST /api/contact — contact form submission
+router.post('/contact', async (req, res) => {
+  try {
+    const { name, email, type, message } = req.body;
+
+    // Basic validation
+    if (!name || !email || !message) {
+      return res.status(400).json({ success: false, error: 'Missing required fields' });
+    }
+
+    // Strip HTML tags
+    const clean = (s: string) => s.replace(/<[^>]*>/g, '').trim();
+
+    // For MVP, just log the contact (later: store in DB or send email)
+    console.log('[AgriVolt Contact]', {
+      name: clean(name),
+      email: clean(email),
+      type: clean(type || 'other'),
+      message: clean(message).substring(0, 1000),
+      timestamp: new Date().toISOString(),
+    });
+
+    res.json({ success: true, message: 'Message received' });
+  } catch (error) {
+    console.error('Contact form error:', error);
+    res.status(500).json({ success: false, error: 'Failed to process message' });
+  }
+});
+
 // DELETE /api/farmers/:id — data deletion request
 router.delete('/:id', async (req, res) => {
   try {

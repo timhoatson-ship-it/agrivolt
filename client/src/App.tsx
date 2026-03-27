@@ -8,6 +8,7 @@ import NotFound from './pages/NotFound';
 const MapExplorer = lazy(() => import('./pages/MapExplorer'));
 const DeveloperDashboard = lazy(() => import('./pages/DeveloperDashboard'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const Contact = lazy(() => import('./pages/Contact'));
 
 function LoadingFallback() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/explore" element={<MapExplorer />} />
           <Route path="/dashboard" element={<DeveloperDashboard />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
