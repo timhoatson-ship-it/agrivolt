@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { AuthProvider } from './lib/auth';
 import LandingPage from './pages/LandingPage';
 import NotFound from './pages/NotFound';
 
@@ -9,6 +10,8 @@ const MapExplorer = lazy(() => import('./pages/MapExplorer'));
 const DeveloperDashboard = lazy(() => import('./pages/DeveloperDashboard'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
 
 function LoadingFallback() {
   return (
@@ -27,16 +30,20 @@ function LoadingFallback() {
 export default function App() {
   return (
     <ErrorBoundary>
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/explore" element={<MapExplorer />} />
-          <Route path="/dashboard" element={<DeveloperDashboard />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <AuthProvider>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/explore" element={<MapExplorer />} />
+            <Route path="/dashboard" element={<DeveloperDashboard />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

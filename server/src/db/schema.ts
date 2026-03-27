@@ -31,6 +31,8 @@ export const developers = pgTable('developers', {
   contactName: text('contact_name').notNull(),
   email: text('email').notNull().unique(),
   phone: text('phone').notNull(),
+  /** bcrypt-hashed password */
+  passwordHash: text('password_hash'),
   /** JSON array of project types */
   projectTypes: text('project_types').notNull(),
   minSizeHectares: doublePrecision('min_size_hectares').default(10),

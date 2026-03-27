@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import farmersRouter from './routes/farmers.js';
+import authRouter from './routes/auth.js';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
@@ -54,6 +55,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 // Routes
+app.use('/api/auth', authRouter);
 app.use('/api/farmers', farmersRouter);
 
 // Convenience alias: /api/properties -> farmer properties (anonymized)

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowLeft, Lock, Filter, MapPin, Zap, Droplets, ChevronDown } from 'lucide-react';
 import { cn, formatAud, formatKm, formatHa } from '@/lib/utils';
 import { api } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import type { GridProximityRating } from '@shared/types';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || 'YOUR_MAPBOX_TOKEN';
@@ -24,10 +25,15 @@ interface AnonymizedProperty {
 }
 
 export default function DeveloperDashboard() {
+  const { isAuthenticated } = useAuth();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const [selectedProperty, setSelectedProperty] = useState<AnonymizedProperty | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
   const [filters, setFilters] = useState({
     maxGridDistance: 30,
     minHectares: 0,

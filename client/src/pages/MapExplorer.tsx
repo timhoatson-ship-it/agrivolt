@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Layers, X, Search, Loader2, CheckCircle2, MapPin as MapPinIcon, MousePointerClick } from 'lucide-react';
+import { ArrowLeft, Layers, X, Search, Loader2, CheckCircle2, MapPin as MapPinIcon, MousePointerClick, Download, FileText, PenTool, Trash2 } from 'lucide-react';
+import { exportCSV, exportPDF } from '@/lib/export';
+import * as turf from '@turf/turf';
 import { cn } from '@/lib/utils';
 import { formatAud, formatKm, formatHa } from '@/lib/utils';
 import {
@@ -47,6 +49,12 @@ interface LayerConfig {
   description: string;
 }
 
+interface ScreeningResult {
+  polygonAreaHa: number;
+  substationsInside: { name: string; distanceToCenter: number; constrained: boolean; constraintNote?: string }[];
+  substationsNearby: { name: string; distanceToCenter: number; constrained: boolean; constraintNote?: string }[];
+}
+
 const DEFAULT_LAYERS: LayerConfig[] = [
   { id: 'substations', label: 'Transmission Substations', visible: true, color: '#f59e0b', description: 'Major substations (Geoscience Australia)' },
   { id: 'transmission', label: 'Transmission Lines', visible: true, color: '#ef4444', description: 'High-voltage transmission lines' },
@@ -91,6 +99,9 @@ export default function MapExplorer() {
   const [loading, setLoading] = useState(true);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [showPrompt, setShowPrompt] = useState(true);
+  const [drawMode, setDrawMode] = useState(false);
+  const [screeningResult, setScreeningResult] = useState<ScreeningResult | null>(null);
+  const drawRef = useRef<any>(null);
 
   // Initialize map
   useEffect(() => {
@@ -587,6 +598,135 @@ export default function MapExplorer() {
   }, []);
 
   // Toggle layer visibility
+  // Polygon screening logic
+  const screenPolygon = useCallback((polygon: GeoJSON.Feature<GeoJSON.Polygon>) => {
+    const areaM2 = turf.area(polygon);
+    const areaHa = Math.round(areaM2 / 10000 * 10) / 10;
+    const centroid = turf.centroid(polygon);
+    const [cLng, cLat] = centroid.geometry.coordinates;
+
+    // Check substations from grid-constraints data
+    const gcFeatures = (gridConstraintsData as any).features || [];
+    const substationsInside: ScreeningResult['substationsInside'] = [];
+    const substationsNearby: ScreeningResult['substationsNearby'] = [];
+
+    for (const feat of gcFeatures) {
+      if (!feat.geometry?.coordinates) continue;
+      const [sLng, sLat] = feat.geometry.coordinates;
+      const pt = turf.point([sLng, sLat]);
+      const distKm = turf.distance(centroid, pt, { units: 'kilometers' });
+      const isConstrained = feat.properties?.constrained === true || feat.properties?.status === 'constrained';
+      const entry = {
+        name: feat.properties?.name || 'Unknown',
+        distanceToCenter: Math.round(distKm * 10) / 10,
+        constrained: isConstrained,
+        constraintNote: feat.properties?.constraint_note || feat.properties?.notes || undefined,
+      };
+
+      if (turf.booleanPointInPolygon(pt, polygon)) {
+        substationsInside.push(entry);
+      } else if (distKm <= 30) {
+        substationsNearby.push(entry);
+      }
+    }
+
+    // Also check the GA substations source on the map
+    const map = mapRef.current;
+    if (map) {
+      const source = map.getSource('substations');
+      if (source && source._data?.features) {
+        for (const feat of source._data.features) {
+          if (!feat.geometry?.coordinates) continue;
+          const coords = feat.geometry.type === 'Point' ? feat.geometry.coordinates : null;
+          if (!coords) continue;
+          const pt = turf.point(coords);
+          const distKm = turf.distance(centroid, pt, { units: 'kilometers' });
+          const name = feat.properties?.name || 'Unknown';
+          // Skip if already counted from grid constraints
+          const alreadyCounted = [...substationsInside, ...substationsNearby].some(s => s.name === name);
+          if (alreadyCounted) continue;
+
+          const entry = { name, distanceToCenter: Math.round(distKm * 10) / 10, constrained: false };
+          if (turf.booleanPointInPolygon(pt, polygon)) {
+            substationsInside.push(entry);
+          } else if (distKm <= 30) {
+            substationsNearby.push(entry);
+          }
+        }
+      }
+    }
+
+    substationsInside.sort((a, b) => a.distanceToCenter - b.distanceToCenter);
+    substationsNearby.sort((a, b) => a.distanceToCenter - b.distanceToCenter);
+
+    setScreeningResult({ polygonAreaHa: areaHa, substationsInside, substationsNearby });
+  }, []);
+
+  const toggleDrawMode = useCallback(async () => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    if (drawMode) {
+      // Disable draw mode
+      if (drawRef.current) {
+        map.removeControl(drawRef.current);
+        drawRef.current = null;
+      }
+      setDrawMode(false);
+      setScreeningResult(null);
+      return;
+    }
+
+    // Enable draw mode
+    const MapboxDraw = (await import('@mapbox/mapbox-gl-draw')).default;
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: { polygon: true, trash: true },
+      defaultMode: 'draw_polygon',
+    });
+    drawRef.current = draw;
+    map.addControl(draw, 'top-right');
+    setDrawMode(true);
+    setScreeningResult(null);
+
+    map.on('draw.create', (e: any) => {
+      const polygon = e.features?.[0];
+      if (polygon) screenPolygon(polygon);
+    });
+    map.on('draw.update', (e: any) => {
+      const polygon = e.features?.[0];
+      if (polygon) screenPolygon(polygon);
+    });
+    map.on('draw.delete', () => {
+      setScreeningResult(null);
+    });
+  }, [drawMode, screenPolygon]);
+
+  const clearScreening = useCallback(() => {
+    if (drawRef.current) {
+      drawRef.current.deleteAll();
+    }
+    setScreeningResult(null);
+  }, []);
+
+  const exportScreeningCSV = useCallback(() => {
+    if (!screeningResult) return;
+    const rows = [
+      ['Type', 'Substation', 'Distance to Center (km)', 'Constrained', 'Notes'],
+      ...screeningResult.substationsInside.map(s => ['Inside polygon', s.name, String(s.distanceToCenter), s.constrained ? 'Yes' : 'No', s.constraintNote || '']),
+      ...screeningResult.substationsNearby.map(s => ['Nearby (<30km)', s.name, String(s.distanceToCenter), s.constrained ? 'Yes' : 'No', s.constraintNote || '']),
+    ];
+    const header = `Polygon Area: ${screeningResult.polygonAreaHa} hectares\n`;
+    const csv = header + rows.map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'agrivolt-screening-results.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [screeningResult]);
+
   const toggleLayer = (layerId: string) => {
     setLayers(prev =>
       prev.map(l => (l.id === layerId ? { ...l, visible: !l.visible } : l))
@@ -666,6 +806,20 @@ export default function MapExplorer() {
           />
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
         </div>
+
+        <button
+          onClick={toggleDrawMode}
+          className={cn(
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
+            drawMode
+              ? 'bg-brand-600 text-white'
+              : 'bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700'
+          )}
+          title={drawMode ? 'Exit draw mode' : 'Draw area to screen'}
+        >
+          <PenTool className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">{drawMode ? 'Exit Draw' : 'Draw Area'}</span>
+        </button>
 
         <Link to="/dashboard" className="text-gray-400 hover:text-white transition-colors text-xs font-medium hidden sm:inline">
           Developers
@@ -820,6 +974,97 @@ export default function MapExplorer() {
               onClose={() => setShowRegistrationModal(false)}
             />
           )}
+
+          {/* Screening results panel */}
+          {screeningResult && (
+            <div className="absolute top-4 right-4 z-10 w-[340px] max-w-[calc(100%-2rem)] bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden animate-in slide-in-from-right-4 fade-in duration-300">
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-gray-900">Area Screening</h3>
+                  <button onClick={clearScreening} className="text-gray-400 hover:text-gray-600 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="mt-2 text-2xl font-bold font-mono text-gray-900">
+                  {screeningResult.polygonAreaHa.toLocaleString()} ha
+                </div>
+                <div className="text-xs text-gray-500">Polygon area</div>
+              </div>
+
+              <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto">
+                {screeningResult.substationsInside.length > 0 && (
+                  <div>
+                    <div className="text-xs font-semibold text-gray-700 mb-2">
+                      Substations inside polygon ({screeningResult.substationsInside.length})
+                    </div>
+                    {screeningResult.substationsInside.map((s, i) => (
+                      <div key={i} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
+                        <div className="flex items-center gap-2">
+                          <div className={cn('w-2 h-2 rounded-full', s.constrained ? 'bg-red-500' : 'bg-green-500')} />
+                          <span className="text-xs text-gray-800">{s.name}</span>
+                        </div>
+                        <span className="text-xs text-gray-500 font-mono">{s.distanceToCenter} km</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {screeningResult.substationsNearby.length > 0 && (
+                  <div>
+                    <div className="text-xs font-semibold text-gray-700 mb-2">
+                      Nearby substations &lt;30km ({screeningResult.substationsNearby.length})
+                    </div>
+                    {screeningResult.substationsNearby.slice(0, 10).map((s, i) => (
+                      <div key={i} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
+                        <div className="flex items-center gap-2">
+                          <div className={cn('w-2 h-2 rounded-full', s.constrained ? 'bg-red-500' : 'bg-green-500')} />
+                          <span className="text-xs text-gray-800">{s.name}</span>
+                        </div>
+                        <span className="text-xs text-gray-500 font-mono">{s.distanceToCenter} km</span>
+                      </div>
+                    ))}
+                    {screeningResult.substationsNearby.length > 10 && (
+                      <div className="text-xs text-gray-400 py-1">
+                        +{screeningResult.substationsNearby.length - 10} more
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {screeningResult.substationsInside.length === 0 && screeningResult.substationsNearby.length === 0 && (
+                  <div className="text-xs text-gray-500 text-center py-4">
+                    No substations found within 30km of this area.
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 text-xs text-gray-400 pt-2">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-green-500" />
+                    <span>Unconstrained</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-red-500" />
+                    <span>Capacity constrained</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 border-t border-gray-100 flex gap-2">
+                <button
+                  onClick={exportScreeningCSV}
+                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <Download className="w-3.5 h-3.5" /> Export CSV
+                </button>
+                <button
+                  onClick={clearScreening}
+                  className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Clear
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -906,6 +1151,23 @@ function AssessmentCard({ assessment, onClose, onRegister }: { assessment: LandA
       <button onClick={onRegister} className="btn-primary w-full mt-4 text-sm">
         Register Interest
       </button>
+
+      {/* Export buttons */}
+      <div className="flex gap-2 mt-3">
+        <button
+          onClick={() => exportCSV(assessment)}
+          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          <Download className="w-3.5 h-3.5" /> CSV
+        </button>
+        <button
+          onClick={() => exportPDF(assessment, MAPBOX_TOKEN)}
+          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          <FileText className="w-3.5 h-3.5" /> PDF Report
+        </button>
+      </div>
+
       <p className="text-xs text-gray-400 text-center mt-2">
         Based on {formatHa(assessment.totalHectares)} at 20% panel coverage
       </p>
