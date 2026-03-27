@@ -35,6 +35,10 @@ const QLD_CADASTRAL = 'https://spatial-gis.information.qld.gov.au/arcgis/rest/se
 // Power stations — same GA service, Layer 1
 const GA_POWERSTATIONS = `${GA_BASE}/1/query?where=1%3D1&outFields=name,primaryfueltype,generationmw,state&f=geojson&resultRecordCount=2000`;
 
+// NSW spatial data endpoints
+const NSW_CADASTRAL = 'https://maps.six.nsw.gov.au/arcgis/rest/services/public/NSW_Cadastre/MapServer/export';
+const NSW_SAL_EXPORT = 'https://mapprod.environment.nsw.gov.au/arcgis/rest/services/Planning/EPI_Additional_Layers/MapServer/export';
+
 interface LayerConfig {
   id: string;
   label: string;
@@ -46,9 +50,9 @@ interface LayerConfig {
 const DEFAULT_LAYERS: LayerConfig[] = [
   { id: 'substations', label: 'Transmission Substations', visible: true, color: '#f59e0b', description: 'Major substations (Geoscience Australia)' },
   { id: 'transmission', label: 'Transmission Lines', visible: true, color: '#ef4444', description: 'High-voltage transmission lines' },
-  { id: 'scl', label: 'Strategic Cropping Land', visible: false, color: '#a855f7', description: 'QLD SCL overlay (planning constraint)' },
-  { id: 'flood', label: 'Flood Zones (QFAO)', visible: false, color: '#3b82f6', description: 'Queensland Floodplain Assessment Overlay' },
-  { id: 'cadastral', label: 'Property Boundaries', visible: false, color: '#6b7280', description: 'QLD cadastral parcels (zoom in to see)' },
+  { id: 'scl', label: 'Strategic Cropping Land', visible: false, color: '#a855f7', description: 'Strategic agricultural land overlays (QLD SCL + NSW SAL)' },
+  { id: 'flood', label: 'Flood Zones (QFAO)', visible: false, color: '#3b82f6', description: 'Floodplain assessment overlays' },
+  { id: 'cadastral', label: 'Property Boundaries', visible: false, color: '#6b7280', description: 'Property boundaries (zoom in to see)' },
   { id: 'powerstations', label: 'Power Stations', visible: false, color: '#8b5cf6', description: 'Major power stations (Geoscience Australia)' },
   { id: 'gridconstraints', label: 'Grid Constraints (DAPR)', visible: false, color: '#dc2626', description: 'Capacity-constrained substations (Energex/Ergon 2025)' },
 ];
@@ -383,6 +387,68 @@ export default function MapExplorer() {
             'text-halo-width': 1,
           },
         });
+
+        // NSW Strategic Agricultural Land (equivalent to QLD SCL)
+        const nswSalDynamicLayers = JSON.stringify([{
+          id: 9,
+          source: { type: 'mapLayer', mapLayerId: 9 },
+          drawingInfo: {
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'esriSFS',
+                style: 'esriSFSSolid',
+                color: [168, 85, 247, 255],
+                outline: { type: 'esriSLS', style: 'esriSLSSolid', color: [128, 50, 200, 255], width: 1.5 },
+              },
+            },
+          },
+        }]);
+        map.addSource('nsw-sal-arcgis', {
+          type: 'raster',
+          tiles: [
+            `${NSW_SAL_EXPORT}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:9&dynamicLayers=${encodeURIComponent(nswSalDynamicLayers)}&f=image`,
+          ],
+          tileSize: 512,
+        });
+        map.addLayer({
+          id: 'nsw-sal-layer',
+          type: 'raster',
+          source: 'nsw-sal-arcgis',
+          paint: { 'raster-opacity': 0.7 },
+          layout: { visibility: 'none' },
+        });
+
+        // NSW Cadastral Boundaries — white outlines like QLD
+        const nswCadastralDynamicLayers = JSON.stringify([{
+          id: 4,
+          source: { type: 'mapLayer', mapLayerId: 4 },
+          drawingInfo: {
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'esriSFS',
+                style: 'esriSFSNull',
+                outline: { type: 'esriSLS', style: 'esriSLSSolid', color: [255, 255, 255, 255], width: 2 },
+              },
+            },
+          },
+        }]);
+        map.addSource('nsw-cadastral-arcgis', {
+          type: 'raster',
+          tiles: [
+            `${NSW_CADASTRAL}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:4&dynamicLayers=${encodeURIComponent(nswCadastralDynamicLayers)}&f=image`,
+          ],
+          tileSize: 512,
+        });
+        map.addLayer({
+          id: 'nsw-cadastral-layer',
+          type: 'raster',
+          source: 'nsw-cadastral-arcgis',
+          minzoom: 13,
+          paint: { 'raster-opacity': 1 },
+          layout: { visibility: 'none' },
+        });
       });
 
       // Click handler for pin-drop assessment
@@ -529,14 +595,31 @@ export default function MapExplorer() {
     const map = mapRef.current;
     if (!map || !mapLoaded) return;
 
-    const layerMapId = `${layerId}-layer`;
-    const current = map.getLayoutProperty(layerMapId, 'visibility');
-    const newVis = current === 'visible' ? 'none' : 'visible';
-    map.setLayoutProperty(layerMapId, 'visibility', newVis);
+    // Map of layer IDs to all Mapbox layer IDs that should toggle together
+    const layerGroups: Record<string, string[]> = {
+      'scl': ['scl-layer', 'nsw-sal-layer'],
+      'cadastral': ['cadastral-layer', 'nsw-cadastral-layer'],
+      'flood': ['flood-layer'],
+      'substations': ['substations-layer', 'substations-labels'],
+      'transmission': ['transmission-layer', 'transmission-labels'],
+      'powerstations': ['powerstations-layer', 'powerstations-labels'],
+      'gridconstraints': ['gridconstraints-layer', 'gridconstraints-labels'],
+    };
 
-    // Also toggle associated label layers
+    const layerIds = layerGroups[layerId] || [`${layerId}-layer`];
+
+    for (const lid of layerIds) {
+      if (!map.getLayer(lid)) continue;
+      const current = map.getLayoutProperty(lid, 'visibility');
+      const newVis = current === 'visible' ? 'none' : 'visible';
+      map.setLayoutProperty(lid, 'visibility', newVis);
+    }
+
+    // Also toggle labels if they exist and aren't already in the group
     const labelsId = `${layerId}-labels`;
-    if (map.getLayer(labelsId)) {
+    if (map.getLayer(labelsId) && !layerGroups[layerId]?.includes(labelsId)) {
+      const current = map.getLayoutProperty(labelsId, 'visibility');
+      const newVis = current === 'visible' ? 'none' : 'visible';
       map.setLayoutProperty(labelsId, 'visibility', newVis);
     }
   };
@@ -665,7 +748,7 @@ export default function MapExplorer() {
           </div>
 
           <p className="mt-6 text-xs text-gray-600">
-            Click anywhere on the map to assess that location.
+            Click anywhere on the map to assess that location. Data coverage varies by state.
           </p>
         </div>
 
