@@ -4,12 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="AgriVolt — Connect your farm land with solar developers. Discover your property's agrivoltaic potential in Queensland, Australia." />
-    
+    <meta name="description" content="Free tool for Australian farmers to assess solar lease income, water savings, and grid proximity. Connects farmers with solar developers using government spatial data. Covers QLD, NSW, and VIC." />
+    <meta name="keywords" content="agrivoltaics, agrisolar, solar farming, solar lease income, farm solar panels, sheep under solar, agricultural solar, Queensland solar, NSW solar, solar developer, renewable energy farming, grid proximity, strategic cropping land" />
+
     <!-- Open Graph -->
-    <meta property="og:title" content="AgriVolt — Queensland Agrivoltaics Marketplace" />
-    <meta property="og:description" content="Discover your farm's solar lease potential. Guaranteed income, water savings, and shade premiums for QLD farmers." />
+    <meta property="og:title" content="AgriVolt — Australian Agrivoltaics Marketplace" />
+    <meta property="og:description" content="Discover your farm's solar lease potential. Guaranteed income, water savings, and shade premiums for Australian farmers." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://agrivolt-navy.vercel.app" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AgriVolt — Australian Agrivoltaics Marketplace" />
+    <meta name="twitter:description" content="Free tool for Australian farmers to assess solar lease income, water savings, and grid proximity." />
     
     <!-- Fonts: General Sans from Fontshare + JetBrains Mono -->
     <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
@@ -18,7 +25,30 @@
     <!-- Mapbox GL CSS -->
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css" rel="stylesheet" />
     
-    <title>AgriVolt — Queensland Agrivoltaics Marketplace</title>
+    <title>AgriVolt — Australian Agrivoltaics Marketplace | Solar Lease Calculator for Farmers</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AgriVolt",
+      "description": "Australian agrivoltaics marketplace connecting farmers with solar developers through spatial intelligence",
+      "url": "https://agrivolt-navy.vercel.app",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "AUD",
+        "description": "Free solar lease assessment for farmers"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "Propine",
+        "url": "https://propine.com.au"
+      }
+    }
+    </script>
   </head>
   <body class="antialiased">
     <div id="root"></div>

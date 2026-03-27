@@ -102,7 +102,7 @@ export default function MapExplorer() {
         center: [149.1, -23.5], // Central QLD
         zoom: 6,
         minZoom: 4,
-        maxBounds: [[135, -30], [160, -10]], // Roughly QLD + surrounds
+        maxBounds: [[112, -44], [155, -10]], // All of mainland Australia
       });
 
       map.addControl(new mapboxgl.NavigationControl(), 'top-right');
@@ -546,7 +546,7 @@ export default function MapExplorer() {
     if (!searchQuery.trim() || !mapRef.current) return;
     try {
       const res = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?country=au&bbox=138,-30,154,-10&access_token=${MAPBOX_TOKEN}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?country=au&access_token=${MAPBOX_TOKEN}`
       );
       const data = await res.json();
       if (data.features?.length) {
@@ -578,7 +578,7 @@ export default function MapExplorer() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            placeholder="Search address or town in QLD..."
+            placeholder="Search address or town in Australia..."
             className="w-full h-9 pl-10 pr-4 rounded-lg bg-gray-800 border border-gray-700 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent"
           />
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />

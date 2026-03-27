@@ -21,6 +21,9 @@ export default function LandingPage() {
             <Link to="/dashboard" className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
               Developers
             </Link>
+            <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="text-hero-text/70 hover:text-white text-sm font-medium transition-colors hidden sm:inline">
+              About
+            </button>
             <Link
               to="/explore"
               className="btn-primary text-sm"
@@ -220,6 +223,171 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* What is Agrivoltaics - Educational */}
+      <section id="what-is-agrivoltaics" className="py-24 bg-hero-bg">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-2xl sm:text-display font-bold font-display text-white text-center">
+            What is agrivoltaics?
+          </h2>
+          <p className="mt-4 text-center text-hero-text/60 max-w-3xl mx-auto">
+            Agrivoltaics — also called agrisolar — is the practice of co-locating solar energy production
+            with agricultural activity on the same land. Elevated solar panels allow farming to continue
+            underneath while generating clean energy above.
+          </p>
+
+          <div className="mt-16 grid md:grid-cols-2 gap-12 items-start">
+            <div>
+              <h3 className="text-lg font-bold font-display text-white mb-4">For graziers</h3>
+              <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
+                Sheep and cattle graze freely beneath elevated solar panels. The shade reduces heat
+                stress, improves pasture quality, and concentrates rainfall runoff into semi-irrigated
+                strips — extending green feed availability during dry periods.
+              </p>
+              <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
+                According to the <a href="https://www.energyco.nsw.gov.au/agrivoltaics-handbook" target="_blank" rel="noopener noreferrer" className="text-brand-400 underline">Agrivoltaics Handbook</a> (Dec 2025),
+                one Dubbo grazier reports carrying 25% more sheep overall under panels, with improved
+                wool quality and quantity attributed to protection from heat, dust, and airborne contaminants.
+              </p>
+              <p className="text-xs text-hero-text/40 italic">
+                Source: Agrivoltaics Handbook, Progressive Agriculture &amp; Farm Renewables Consulting, funded by NSW Government / EnergyCo (2025)
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold font-display text-white mb-4">For croppers &amp; horticulture</h3>
+              <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
+                International research shows enhanced crop yields for shade-tolerant produce including
+                berries, leafy greens, asparagus, and garlic. Panel shading can reduce irrigation
+                requirements by up to 20% in arid regions, while protecting crops from frost and hail damage.
+              </p>
+              <p className="text-sm text-hero-text/60 leading-relaxed mb-4">
+                In Australia, early trials show promise for vineyards and certain vegetables, though
+                research tailored to Australian conditions is still developing. The key benefit for many
+                Australian farmers is the drought-proof secondary income from solar lease payments.
+              </p>
+              <p className="text-xs text-hero-text/40 italic">
+                Sources: Elamri et al., Agricultural Water Management (2018); SPE AgriSolar Best Practice Guide
+              </p>
+            </div>
+          </div>
+
+          {/* Key numbers */}
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { value: '$1.4B→$6.9B', label: 'Australian agrivoltaics market growth by 2031', source: 'Industry projections (30.5% CAGR)' },
+              { value: '25%', label: 'More sheep carried under panels vs open paddock', source: 'Agrivoltaics Handbook case study' },
+              { value: '20%', label: 'Reduction in irrigation water under panels', source: 'Elamri et al. (2018)' },
+              { value: '$100–$250', label: 'Per hectare slashing cost avoided by grazing', source: 'Agrivoltaics Handbook (2025 estimates)' },
+            ].map(({ value, label, source }) => (
+              <div key={label} className="bg-gray-900/50 rounded-xl p-5 border border-gray-800/50">
+                <div className="text-xl font-bold text-brand-400 font-display">{value}</div>
+                <div className="text-xs text-hero-text/50 mt-1">{label}</div>
+                <div className="text-[10px] text-hero-text/30 mt-2 italic">{source}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Resources */}
+      <section className="py-16 bg-surface-light">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-2xl sm:text-display font-bold font-display text-center text-gray-900">
+            Resources &amp; references
+          </h2>
+          <p className="mt-4 text-center text-gray-500 max-w-2xl mx-auto">
+            AgriVolt is built on publicly available Australian government data and peer-reviewed research.
+          </p>
+
+          <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                title: 'Agrivoltaics Handbook',
+                org: 'Progressive Agriculture & Farm Renewables Consulting',
+                description: 'The first comprehensive Australian guide to planning, designing, and implementing agrivoltaics projects. Covers sheep grazing, horticulture, cattle, and business models.',
+                url: 'https://www.energyco.nsw.gov.au/agrivoltaics-handbook',
+                year: '2025',
+              },
+              {
+                title: 'National Electricity Infrastructure',
+                org: 'Geoscience Australia',
+                description: 'Transmission substations, power stations, and high-voltage transmission lines across Australia. Updated regularly.',
+                url: 'https://services.ga.gov.au/gis/rest/services/National_Electricity_Infrastructure/MapServer',
+                year: 'Ongoing',
+              },
+              {
+                title: 'Solar Exposure Data',
+                org: 'Bureau of Meteorology',
+                description: 'Daily and monthly solar exposure grids for all of Australia at 5km resolution, derived from satellite imagery since 1990.',
+                url: 'https://www.bom.gov.au/climate/austmaps/about-solar-maps.shtml',
+                year: 'Ongoing',
+              },
+              {
+                title: 'Strategic Cropping Land',
+                org: 'QLD Department of Resources',
+                description: 'Mapping of land highly suitable for cropping, regulated under the Regional Planning Interests Act 2014.',
+                url: 'https://www.data.qld.gov.au/dataset/strategic-cropping-land-series',
+                year: '2025',
+              },
+              {
+                title: 'Distribution Annual Planning Reports',
+                org: 'Energy Queensland (Ergon & Energex)',
+                description: 'Network capacity forecasts, constrained substations, and 5-year load projections for the QLD distribution network.',
+                url: 'https://www.ergon.com.au/network/about-us/company-reports,-plans-and-charters/distribution-annual-planning-report',
+                year: '2025',
+              },
+              {
+                title: 'Floodplain Assessment Overlay',
+                org: 'QLD Government',
+                description: 'Statewide mapping of potential floodplain areas to help identify flood risk for property assessment.',
+                url: 'https://www.data.qld.gov.au/dataset/queensland-floodplain-assessment-overlay',
+                year: '2024',
+              },
+            ].map(({ title, org, description, url, year }) => (
+              <a
+                key={title}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white rounded-card shadow-card p-6 hover:shadow-card-hover transition-shadow block"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-mono text-brand-600">{year}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
+                </div>
+                <h3 className="text-sm font-bold font-display text-gray-900">{title}</h3>
+                <p className="text-xs text-gray-500 mt-0.5">{org}</p>
+                <p className="text-xs text-gray-400 mt-2 leading-relaxed">{description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About */}
+      <section id="about" className="py-24 bg-white border-t border-gray-100">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="text-2xl sm:text-display font-bold font-display text-gray-900">
+            About AgriVolt
+          </h2>
+          <p className="mt-6 text-gray-600 leading-relaxed">
+            AgriVolt was built by <a href="https://propine.com.au" target="_blank" rel="noopener noreferrer" className="text-brand-600 font-medium underline">Propine</a> to
+            solve the #1 bottleneck in Australia's renewable energy transition: connecting farmers
+            with solar developers. The platform uses publicly available government spatial data to
+            give landholders a free, instant assessment of their property's agrivoltaic potential —
+            and connects them with vetted solar developers looking for land.
+          </p>
+          <p className="mt-4 text-gray-600 leading-relaxed">
+            All data is sourced from Geoscience Australia, the Bureau of Meteorology, QLD Spatial
+            Services, and Energy Queensland's Distribution Annual Planning Reports. Estimates are
+            indicative only and should not be relied upon as financial advice.
+          </p>
+          <p className="mt-4 text-sm text-gray-500">
+            Questions? Contact us at{' '}
+            <a href="mailto:tim.hoatson@propine.com.au" className="text-brand-600 underline">tim.hoatson@propine.com.au</a>
+          </p>
+        </div>
+      </section>
+
       {/* Data Sources Trust Section */}
       <section className="py-16 bg-surface-light border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-6 text-center">
@@ -256,6 +424,11 @@ export default function LandingPage() {
             <div className="flex items-center gap-2">
               <AgriVoltLogo />
               <span className="text-sm font-bold text-white font-display">AgriVolt</span>
+            </div>
+            <div className="flex items-center gap-4 text-xs text-gray-600">
+              <Link to="/explore" className="hover:text-gray-400">Map Explorer</Link>
+              <Link to="/dashboard" className="hover:text-gray-400">Developers</Link>
+              <Link to="/privacy" className="hover:text-gray-400">Privacy Policy</Link>
             </div>
             <p className="text-xs text-gray-500">
               Estimates are indicative only and based on publicly available government data.
