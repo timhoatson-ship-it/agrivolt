@@ -1,0 +1,958 @@
+{
+  "metadata": {
+    "source": "Energy Queensland DAPR 2025",
+    "energex_url": "https://www.energex.com.au/about-us/company-reports,-plans-and-charters/distribution-annual-planning-report",
+    "ergon_url": "https://www.ergon.com.au/network/about-us/company-reports,-plans-and-charters/distribution-annual-planning-report",
+    "extracted": "2026-03-27",
+    "note": "Constrained substations from DAPR Appendix C. Energex has coordinates from ArcGIS. Ergon coordinates TBD (need geocoding)."
+  },
+  "energex_constrained": [
+    {
+      "code": "AHL",
+      "name": "AHL - Arana Hills (33/11kV)",
+      "network": "Energex",
+      "lat": -27.3964373692558,
+      "lng": 152.961725080243,
+      "capacityMVA": 59.8,
+      "peakLoadMVA": 43.2
+    },
+    {
+      "code": "BHL",
+      "name": "BHL - Bald Hills Bus 2 (33/11kV)",
+      "network": "Energex",
+      "lat": -27.3285551291125,
+      "lng": 153.015526110032,
+      "capacityMVA": 30,
+      "peakLoadMVA": 14.5
+    },
+    {
+      "code": "BKD",
+      "name": "BKD - Birkdale (33/11kV)",
+      "network": "Energex",
+      "lat": -27.5084847392346,
+      "lng": 153.22100997029,
+      "capacityMVA": 59.9,
+      "peakLoadMVA": 38.2
+    },
+    {
+      "code": "BIS",
+      "name": "BIS - Bribie Island (33/11kV)",
+      "network": "Energex",
+      "lat": -27.0635990199376,
+      "lng": 153.153920829714,
+      "capacityMVA": 41.6,
+      "peakLoadMVA": 28.4
+    },
+    {
+      "code": "CBW",
+      "name": "CBW - Caboolture West (33/11kV)",
+      "network": "Energex",
+      "lat": -27.0811834200423,
+      "lng": 152.934551750617,
+      "capacityMVA": 58.5,
+      "peakLoadMVA": 40
+    },
+    {
+      "code": "CMV",
+      "name": "CMV - Calamvale (33/11kV)",
+      "network": "Energex",
+      "lat": -27.6151612889068,
+      "lng": 153.050720330081,
+      "capacityMVA": 59.1,
+      "peakLoadMVA": 47.8
+    },
+    {
+      "code": "CLD",
+      "name": "CLD - Caloundra (132/11kV)",
+      "network": "Energex",
+      "lat": -26.8006190485262,
+      "lng": 153.130910120125,
+      "capacityMVA": 115.1,
+      "peakLoadMVA": 79.5
+    },
+    {
+      "code": "CMA",
+      "name": "CMA - Coomera (33/11kV)",
+      "network": "Energex",
+      "lat": -27.85516656834,
+      "lng": 153.293843960101,
+      "capacityMVA": 59,
+      "peakLoadMVA": 54.6
+    },
+    {
+      "code": "CNA",
+      "name": "CNA - Cooneana (33/11kV)",
+      "network": "Energex",
+      "lat": -27.6365388190397,
+      "lng": 152.820445439292,
+      "capacityMVA": 26.3,
+      "peakLoadMVA": 19.8
+    },
+    {
+      "code": "CNB",
+      "name": "CNB - Cornubia (33/11kV)",
+      "network": "Energex",
+      "lat": -27.6635938098302,
+      "lng": 153.214817410196,
+      "capacityMVA": 30,
+      "peakLoadMVA": 15.9
+    },
+    {
+      "code": "FBS",
+      "name": "FBS - Fisherman Is B (33/11kV)",
+      "network": "Energex",
+      "lat": -27.3936336996837,
+      "lng": 153.165147379851,
+      "capacityMVA": 26.3,
+      "peakLoadMVA": 14.2
+    },
+    {
+      "code": "GNA",
+      "name": "GNA - Goodna (33/11kV)",
+      "network": "Energex",
+      "lat": -27.6216942116452,
+      "lng": 152.877843683944,
+      "capacityMVA": 27.5,
+      "peakLoadMVA": 19.3
+    },
+    {
+      "code": "HWD",
+      "name": "HWD - Heathwood (33/11kV)",
+      "network": "Energex",
+      "lat": -27.642459529033,
+      "lng": 152.980079311264,
+      "capacityMVA": 52.1,
+      "peakLoadMVA": 35.8
+    },
+    {
+      "code": "HIS",
+      "name": "HIS - Hope Island (33/11kV)",
+      "network": "Energex",
+      "lat": -27.8792978982875,
+      "lng": 153.360377940746,
+      "capacityMVA": 58.1,
+      "peakLoadMVA": 47.3
+    },
+    {
+      "code": "IPS",
+      "name": "IPS - Ipswich South (33/11kV)",
+      "network": "Energex",
+      "lat": -27.6387483381442,
+      "lng": 152.761000039456,
+      "capacityMVA": 60,
+      "peakLoadMVA": 31.8
+    },
+    {
+      "code": "JBB",
+      "name": "JBB - Jimboomba (33/11kV)",
+      "network": "Energex",
+      "lat": -27.8089274697989,
+      "lng": 153.044443680182,
+      "capacityMVA": 48,
+      "peakLoadMVA": 42.9
+    },
+    {
+      "code": "KLG",
+      "name": "KLG - Kallangur (33/11kV)",
+      "network": "Energex",
+      "lat": -27.2511543893177,
+      "lng": 152.993763081074,
+      "capacityMVA": 44.6,
+      "peakLoadMVA": 51
+    },
+    {
+      "code": "LBH",
+      "name": "LBH - Landsborough (33/11kV)",
+      "network": "Energex",
+      "lat": -26.8080189494183,
+      "lng": 152.969987159941,
+      "capacityMVA": 30,
+      "peakLoadMVA": 20.1
+    },
+    {
+      "code": "LGV",
+      "name": "LGV - Logan Village (33/11kV)",
+      "network": "Energex",
+      "lat": -27.7700961890107,
+      "lng": 153.10922646007,
+      "capacityMVA": 30,
+      "peakLoadMVA": 32.7
+    },
+    {
+      "code": "MBG",
+      "name": "MBG - Marburg (33/11kV)",
+      "network": "Energex",
+      "lat": -27.5654210500054,
+      "lng": 152.593735989717,
+      "capacityMVA": 7.2,
+      "peakLoadMVA": 7.7
+    },
+    {
+      "code": "MLB",
+      "name": "MLB - Mooloolaba (132/11kV)",
+      "network": "Energex",
+      "lat": -26.7090468595524,
+      "lng": 153.068878949997,
+      "capacityMVA": 67.8,
+      "peakLoadMVA": 55.1
+    },
+    {
+      "code": "MFD",
+      "name": "MFD - Morayfield (33/11kV)",
+      "network": "Energex",
+      "lat": -27.1341615589466,
+      "lng": 152.959378599376,
+      "capacityMVA": 47.8,
+      "peakLoadMVA": 40.6
+    },
+    {
+      "code": "MFN",
+      "name": "MFN - Morayfield North (33/11kV)",
+      "network": "Energex",
+      "lat": -27.0979674189031,
+      "lng": 152.951820839699,
+      "capacityMVA": 53.5,
+      "peakLoadMVA": 41.6
+    },
+    {
+      "code": "MGP",
+      "name": "MGP - Mudgeeraba West Pkg (33/11kV)",
+      "network": "Energex",
+      "lat": -28.0829992290861,
+      "lng": 153.35253809032,
+      "capacityMVA": 45,
+      "peakLoadMVA": 30
+    },
+    {
+      "code": "NMC",
+      "name": "NMC - North Maclean Bus 1 (33/11kV)",
+      "network": "Energex",
+      "lat": -27.7444018694427,
+      "lng": 152.986151070711,
+      "capacityMVA": 30,
+      "peakLoadMVA": 33.5
+    },
+    {
+      "code": "NMC",
+      "name": "NMC - North Maclean Bus 2 (33/11kV)",
+      "network": "Energex",
+      "lat": -27.7444018694427,
+      "lng": 152.986151070711,
+      "capacityMVA": 30,
+      "peakLoadMVA": 21.8
+    },
+    {
+      "code": "PWC",
+      "name": "PWC - Palmwoods Central (33/11kV)",
+      "network": "Energex",
+      "lat": -26.689331249498,
+      "lng": 152.95026354973,
+      "capacityMVA": 30.3,
+      "peakLoadMVA": 29.8
+    },
+    {
+      "code": "PPE",
+      "name": "PPE - Pimpama East (33/11kV)",
+      "network": "Energex",
+      "lat": -27.8111817192334,
+      "lng": 153.335594200208,
+      "capacityMVA": 59.5,
+      "peakLoadMVA": 51.6
+    },
+    {
+      "code": "WSE",
+      "name": "WSE - Whiteside (33/11kV)",
+      "network": "Energex",
+      "lat": -27.2260933587117,
+      "lng": 152.899750490201,
+      "capacityMVA": 16.5,
+      "peakLoadMVA": 11.6
+    },
+    {
+      "code": "WHO",
+      "name": "WHO - Wivenhoe (33/11kV)",
+      "network": "Energex",
+      "lat": -27.4098407894071,
+      "lng": 152.630458380078,
+      "capacityMVA": 11.5,
+      "peakLoadMVA": 7.9
+    },
+    {
+      "code": "WFD",
+      "name": "WFD - Woodford (33/11kV)",
+      "network": "Energex",
+      "lat": -26.9707128196086,
+      "lng": 152.788581859721,
+      "capacityMVA": 18,
+      "peakLoadMVA": 15.8
+    },
+    {
+      "code": "YTA",
+      "name": "YTA - Yatala Bus 3 (110/11kV)",
+      "network": "Energex",
+      "lat": -27.760881389014,
+      "lng": 153.228842719252,
+      "capacityMVA": 66,
+      "peakLoadMVA": 49.7
+    },
+    {
+      "code": "ZMR",
+      "name": "ZMR - Zillmere (33/11kV)",
+      "network": "Energex",
+      "lat": -27.3586081888556,
+      "lng": 153.030527670649,
+      "capacityMVA": 54.8,
+      "peakLoadMVA": 44.8
+    },
+    {
+      "code": "BLH",
+      "name": "BLH - Beenleigh BS (110/33kV)",
+      "network": "Energex",
+      "type": "Bulk Supply",
+      "lat": -27.7246877486621,
+      "lng": 153.208403156093,
+      "capacityMVA": 259.6,
+      "peakLoadMVA": 218.9
+    },
+    {
+      "code": "BPN",
+      "name": "BPN - Browns Plains BS (110/33kV)",
+      "network": "Energex",
+      "type": "Bulk Supply",
+      "lat": -27.6626142389633,
+      "lng": 153.037611979488,
+      "capacityMVA": 196.4,
+      "peakLoadMVA": 192.1
+    },
+    {
+      "code": "CBT",
+      "name": "CBT - Caboolture BS (110/33kV)",
+      "network": "Energex",
+      "type": "Bulk Supply",
+      "lat": -27.065202684776,
+      "lng": 152.963135602599,
+      "capacityMVA": 269.5,
+      "peakLoadMVA": 212.4
+    },
+    {
+      "code": "CVL",
+      "name": "CVL - Cleveland BS (110/33kV)",
+      "network": "Energex",
+      "type": "Bulk Supply",
+      "lat": -27.5464240097804,
+      "lng": 153.253087060013,
+      "capacityMVA": 286.5,
+      "peakLoadMVA": 210.7
+    },
+    {
+      "code": "CMA",
+      "name": "CMA - Coomera BS (110/33kV)",
+      "network": "Energex",
+      "type": "Bulk Supply",
+      "lat": -27.85516656834,
+      "lng": 153.293843960101,
+      "capacityMVA": 189.6,
+      "peakLoadMVA": 159.1
+    },
+    {
+      "code": "JBB",
+      "name": "JBB - Jimboomba BS (110/33kV)",
+      "network": "Energex",
+      "type": "Bulk Supply",
+      "lat": -27.8089274697989,
+      "lng": 153.044443680182,
+      "capacityMVA": 88,
+      "peakLoadMVA": 102.5
+    },
+    {
+      "code": "NBR",
+      "name": "NBR - Nambour BS (132/33kV)",
+      "network": "Energex",
+      "type": "Bulk Supply",
+      "lat": -26.6157214669903,
+      "lng": 152.96105092674,
+      "capacityMVA": 143.8,
+      "peakLoadMVA": 115.3
+    },
+    {
+      "code": "RVW",
+      "name": "RVW - Raceview BS (110/33kV)",
+      "network": "Energex",
+      "type": "Bulk Supply",
+      "lat": -27.630670719858,
+      "lng": 152.778882600531,
+      "capacityMVA": 132,
+      "peakLoadMVA": 140.3
+    }
+  ],
+  "ergon_constrained": [
+    {
+      "code": "EMER",
+      "name": "Emerald (66/22kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "CA ARP CW PAR EMER Relay Replacement\n- Target Commissioning - Dec-2026\n- Cost: $8.1M \u00b1 15%",
+      "lat": -23.5263118,
+      "lng": 148.1618622
+    },
+    {
+      "code": "GARB",
+      "name": "Garbutt (132/66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "Garbutt 132/66/11kV substation (T046)\n- Target Commissioning - Nov-2026\n- Cost: $23.0M \u00b1 15%",
+      "lat": -19.255792,
+      "lng": 146.7709268
+    },
+    {
+      "code": "WETO",
+      "name": "West Toowoomba (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condtion",
+        "Reliability"
+      ],
+      "solution": "WETO CBRM SW WETO 11kV SWB - 1st stage\n- Target Commissioning - Feb-2026\n- Cost: $18.6M \u00b1 15%",
+      "lat": -27.6030794,
+      "lng": 151.9303591
+    },
+    {
+      "code": "TORR",
+      "name": "Torrington (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "ARP SW TO PAR TORR Relay Rplc\n- Target Commissioning - Mar-2026\n- Cost: $7.8M \u00b1 15%",
+      "lat": -27.54552,
+      "lng": 151.8868179
+    },
+    {
+      "code": "EABU",
+      "name": "East Bundaberg (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "WB EABU Asset Replacement\n- Target Commissioning - Jul-2026\n- Cost: $12.9M \u00b1 15%",
+      "lat": -24.8569103,
+      "lng": 152.3703235
+    },
+    {
+      "code": "PIAL",
+      "name": "Pialba (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "WB PIAL Asset Replacement\n- Target Commissioning - Feb-2027\n- Cost: $18.0M \u00b1 15%",
+      "lat": -25.281161,
+      "lng": 152.8330071
+    },
+    {
+      "code": "CLER",
+      "name": "Clermont (66/22kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "CA CLER ASSET REFURBISHMENT STAGE 2\n- Target Commissioning - Jun-2028\n- Cost: $6.2M \u00b1 15%",
+      "lat": -22.8392872,
+      "lng": 147.1550176
+    },
+    {
+      "code": "CARI",
+      "name": "Cape River (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "Cape River East Future Substation\n- Target Commissioning - Feb-2026\n- Cost: $19.4M \u00b1 15%",
+      "lat": -21.0251302,
+      "lng": 146.5164868
+    },
+    {
+      "code": "MOPA",
+      "name": "Mona Park (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "ZS RPL NQ MOPA 2 TRS AND 3 CTS\n- Target Commissioning - Oct-2026\n- Cost: $9.3M \u00b1 15%",
+      "lat": -19.700995,
+      "lng": 147.2404092
+    },
+    {
+      "code": "KING",
+      "name": "Kingaroy (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "WB KING ASSET REPLACEMENT\n- Target Commissioning - Feb-2029\n- Cost: $15.3M \u00b1 15%",
+      "lat": -26.5412563,
+      "lng": 151.8394231
+    },
+    {
+      "code": "ROSO",
+      "name": "Rockhampton South (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "CA ROSO ZS Refurb\n- Target Commissioning - Aug-2029\n- Cost: $17.2M \u00b1 15%",
+      "lat": -23.3992007,
+      "lng": 150.5029697
+    },
+    {
+      "code": "GEOR",
+      "name": "Georgetown (66/22kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "FN GEORSS Replace Protn relay assets\n- Target Commissioning - Aug-2026\n- Cost: $4.2M \u00b1 15%",
+      "lat": -18.2897926,
+      "lng": 143.5476606
+    },
+    {
+      "code": "MARY",
+      "name": "Maryborough Bulk Supply",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "ZS AUG MARY 66kV Bus Tie Breaker\n- Target Commissioning - Aug-2029\n- Cost: $13.9M \u00b1 15%",
+      "lat": -25.537583,
+      "lng": 152.7019182
+    },
+    {
+      "code": "ROGL",
+      "name": "Rockhampton Glenmore (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "ZS RPL CA RFB ROGL VTE VTH PROT RLY SACS\n- Target Commissioning - Dec-2029\n- Cost: $13.4M \u00b1 20%",
+      "lat": -23.3528,
+      "lng": 150.5261
+    },
+    {
+      "code": "BILO",
+      "name": "Biloela (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "CA BILO Asset Replacement\n- Target Commissioning - Jun-2029\n- Cost: $17.3M \u00b1 20%",
+      "lat": -24.3997711,
+      "lng": 150.5141867
+    },
+    {
+      "code": "JAND",
+      "name": "Jandowae (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "JAND SW JAND Replace 2 CBs  1 TR & 1 VT\n- Target Commissioning - Sep-2026\n- Cost: $3.0M \u00b1 20%",
+      "lat": -26.729752,
+      "lng": 151.1779748
+    },
+    {
+      "code": "MERN",
+      "name": "Meringandan (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Augmentation",
+        "Capacity"
+      ],
+      "solution": "SW Nth Toowoomba CBRM & Reinforcement MERN sub rebuild\n- Target Commissioning - Jun-2028\n- Cost: $22.8M \u00b1 20%",
+      "lat": -27.4245587,
+      "lng": 151.9185188
+    },
+    {
+      "code": "PLEY",
+      "name": "Pleystowe (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "PLEY PLEYSTOWE - Replace 3x 33kV ACR Controllers\n- Target Commissioning - Jun-2027\n- Cost: $0.8M \u00b1 20%",
+      "lat": -21.150371,
+      "lng": 149.0223067
+    },
+    {
+      "code": "TURK",
+      "name": "Turkinje (132/66kV) Bulk Supply",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "FN TURK Replace CBs  CTs  VTs  ESs & ISs\n- Target Commissioning - Dec-2027\n- Cost: $31.4M \u00b1 15%",
+      "lat": -17.0853876,
+      "lng": 145.4349984
+    },
+    {
+      "code": "CHIN",
+      "name": "Chinchilla Bulk Supply",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "CBRM SW CHIN Remove 110kV, 132/33kV Tx\n- Target Commissioning - Sep-2031\n- Cost: $9.2M \u00b1 20%",
+      "lat": -26.7501005,
+      "lng": 150.6228556
+    },
+    {
+      "code": "SARI",
+      "name": "Sarina (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "MK SARI Asset Replacement\n- Target Commissioning - Jun-2028\n- Cost: $12.2M \u00b1 20%",
+      "lat": -21.435808,
+      "lng": 149.1645943
+    },
+    {
+      "code": "GLSO",
+      "name": "Gladstone South (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "CBRM CA GLSO 15*66IS 1*66CB 15*PR\n- Target Commissioning - Jun-2027\n- Cost: $9.9M \u00b1 20%",
+      "lat": -23.8645135,
+      "lng": 151.2664523
+    },
+    {
+      "code": "CRAN",
+      "name": "Cranbrook (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "NQ CRAN Replace 11kV Switchboard\n- Target Commissioning - Oct-2026\n- Cost: $9.2M \u00b1 20%",
+      "lat": -19.305269,
+      "lng": 146.7532249
+    },
+    {
+      "code": "ROSE",
+      "name": "Rosella (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "ROSE ROSELLA - Replace 2 TRs & 11 PRs\n- Target Commissioning - Dec-2027\n- Cost: $7.8M \u00b1 20%",
+      "lat": -21.2390585,
+      "lng": 149.1458446
+    },
+    {
+      "code": "WARW",
+      "name": "Warwick (110/33kV) Bulk Supply",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "WARW WARWICK - Replace 4 CBs, 3 CTs, 6 PRs & SDs\n- Target Commissioning - Feb-2028\n- Cost: $4.1M \u00b1 20%",
+      "lat": -28.2163204,
+      "lng": 152.0327039
+    },
+    {
+      "code": "WOOG",
+      "name": "Woodgate (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "WOOG WOODGATE - Replace 1 TR\n- Target Commissioning - Jun-2027\n- Cost: $6.8M \u00b1 20%",
+      "lat": -25.1173,
+      "lng": 152.4925138
+    },
+    {
+      "code": "CANO",
+      "name": "Cairns North (132/22kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "CANO Cairns North - Replace 6 VTs & PRs\n- Target Commissioning - Dec-2026\n- Cost: $0.5M \u00b1 20%",
+      "lat": -16.9044645,
+      "lng": 145.7694546
+    },
+    {
+      "code": "MOSI",
+      "name": "Mt Sibley (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "SW MOSI Replace 2 TR, 3 VTs & 9 ISs\n- Target Commissioning - Feb-2027\n- Cost: $10.7M \u00b1 20%",
+      "lat": -27.8,
+      "lng": 151.9666667
+    },
+    {
+      "code": "AYRZ",
+      "name": "Ayr (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "REPL RNN FL AYRZ 2TX, 5CT, PRs & DC Dupl\n- Target Commissioning - Jan-2029\n- Cost: $12.2M \u00b1 20%",
+      "lat": -19.5758597,
+      "lng": 147.4044626
+    },
+    {
+      "code": "PAMP",
+      "name": "Pampas (33/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "PAMP - Replace 3 TRs, VT & Relays\n- Target Commissioning - Aug-2028\n- Cost: $14.7M \u00b1 20%",
+      "lat": -27.791472,
+      "lng": 151.3926194
+    },
+    {
+      "code": "MACI",
+      "name": "Maryborough City (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "WB MACI WALK Sub Refurb\n- Target Commissioning - Nov-2031\n- Cost: $4.7M \u00b1 20%",
+      "lat": -25.5377995,
+      "lng": 152.7016999
+    },
+    {
+      "code": "MILC",
+      "name": "Millchester (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "MILC MILLCHESTER - Replace 3 VTs, 6CTs, PRs, RTUs &  SDs\n- Target Commissioning - Sep-2027\n- Cost: $4.4M \u00b1 20%",
+      "lat": -20.092656,
+      "lng": 146.2794872
+    },
+    {
+      "code": "CLSO",
+      "name": "Clare South (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "CLSO CLARE SOUTH - Replace 24 VTs\n- Target Commissioning - May-2026\n- Cost: $1.3M \u00b1 15%",
+      "lat": -19.7621,
+      "lng": 147.2635
+    },
+    {
+      "code": "DEGI",
+      "name": "Degilbo (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "WB DEGI Replace 4 x TRs, 2 x CBs, 1 x FTS, 6 x PRs\n- Target Commissioning - Dec-2028\n- Cost: $14.9M \u00b1 20%",
+      "lat": -25.4785395,
+      "lng": 151.9803319
+    },
+    {
+      "code": "HOHI",
+      "name": "Home Hill (66/11kV) Zone Substation",
+      "network": "Ergon",
+      "limitations": [
+        "Asset Condition",
+        "Reliability"
+      ],
+      "solution": "HOHI HOME HILL - Replace VTs, PRs, SDs & Duplicate DC Supply\n- Target Commissioning - Dec-2027\n- Cost: $6.1M \u00b1 20%",
+      "lat": -19.659461,
+      "lng": 147.4135855
+    }
+  ],
+  "ergon_feeder_constraints": [
+    {
+      "region": "Southern",
+      "feeder": "BK206",
+      "feederId": "40216323",
+      "location": "Tambo",
+      "exceedanceMVA": 1.163394758
+    },
+    {
+      "region": "Southern",
+      "feeder": "SB202",
+      "feederId": "40200483",
+      "location": "ROLLESTON NORTH",
+      "exceedanceMVA": 0.165320882
+    },
+    {
+      "region": "Southern",
+      "feeder": "FV111",
+      "feederId": "40001100",
+      "location": "FRENCHVILLE RD",
+      "exceedanceMVA": 1.60287814
+    },
+    {
+      "region": "Southern",
+      "feeder": "GE-01",
+      "feederId": "25273297",
+      "location": "CORFIELD SWER",
+      "exceedanceMVA": 0.05705
+    },
+    {
+      "region": "Southern",
+      "feeder": "GE-03",
+      "feederId": "25273293",
+      "location": "GLENELG SWER",
+      "exceedanceMVA": 0.02433925
+    },
+    {
+      "region": "Northern",
+      "feeder": "BLRI-05",
+      "feederId": "84737242",
+      "location": "BLRI-05 FDR",
+      "exceedanceMVA": 1.400954502
+    },
+    {
+      "region": "Northern",
+      "feeder": "PA-16",
+      "feederId": "25267836",
+      "location": "PETERARLETT NO.16",
+      "exceedanceMVA": 1.195242592
+    },
+    {
+      "region": "Southern",
+      "feeder": "EM214",
+      "feederId": "40001004",
+      "location": "Hospital Road",
+      "exceedanceMVA": 1.693649
+    },
+    {
+      "region": "Southern",
+      "feeder": "F133R",
+      "feederId": "60026691",
+      "location": "ROMA COLLEGE",
+      "exceedanceMVA": 0.50812828
+    },
+    {
+      "region": "Northern",
+      "feeder": "DG-07",
+      "feederId": "20004796",
+      "location": "DANGLEESON NO.07",
+      "exceedanceMVA": 1.031437624
+    },
+    {
+      "region": "Northern",
+      "feeder": "3220",
+      "feederId": "84653808",
+      "location": "19.1KV BELYANDO FDR 3220",
+      "exceedanceMVA": 0.008365
+    },
+    {
+      "region": "Northern",
+      "feeder": "SF-03",
+      "feederId": "25272938",
+      "location": "Stamford No.03 Tangorin SWER",
+      "exceedanceMVA": 0.02089336
+    },
+    {
+      "region": "Northern",
+      "feeder": "2HAM",
+      "feederId": "83896573",
+      "location": "HAMBLEDON FDR",
+      "exceedanceMVA": 2.1292458
+    },
+    {
+      "region": "Northern",
+      "feeder": "HP-05",
+      "feederId": "20007358",
+      "location": "HERMITPARK NO.05",
+      "exceedanceMVA": 0.73209608
+    },
+    {
+      "region": "Southern",
+      "feeder": "F049R",
+      "feederId": "60026666",
+      "location": "ROMA NORTH",
+      "exceedanceMVA": 1.837581
+    },
+    {
+      "region": "Southern",
+      "feeder": "F060T",
+      "feederId": "60026667",
+      "location": "TARA",
+      "exceedanceMVA": 0.816397
+    },
+    {
+      "region": "Northern",
+      "feeder": "304",
+      "feederId": "30053814",
+      "location": "GOLDSMITH ST FDR",
+      "exceedanceMVA": 0.864673696
+    },
+    {
+      "region": "Southern",
+      "feeder": "F206C",
+      "feederId": "60026701",
+      "location": "AUGATHELLA",
+      "exceedanceMVA": 0.6788677
+    },
+    {
+      "region": "Northern",
+      "feeder": "AV-10",
+      "feederId": "20001178",
+      "location": "AITKENVALE NO.10",
+      "exceedanceMVA": 0.724527
+    },
+    {
+      "region": "Northern",
+      "feeder": "2NOR",
+      "feederId": "10020673",
+      "location": "NORMANTON",
+      "exceedanceMVA": 0.419613578
+    }
+  ],
+  "summary": {
+    "energex_constrained_count": 41,
+    "ergon_constrained_count": 35,
+    "ergon_feeder_count": 78,
+    "total_constrained": 76
+  }
+}

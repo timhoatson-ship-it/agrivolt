@@ -267,15 +267,34 @@ export default function MapExplorer() {
           id: 'flood-layer',
           type: 'raster',
           source: 'flood-arcgis',
-          paint: { 'raster-opacity': 0.6 },
+          paint: { 'raster-opacity': 0.7 },
           layout: { visibility: 'none' },
         });
 
-        // Cadastral Boundaries (Layer 4) — only renders at zoom 13+
+        // Cadastral Boundaries (Layer 4) — bold white outlines, zoom 13+
+        const cadastralDynamicLayers = JSON.stringify([{
+          id: 4,
+          source: { type: 'mapLayer', mapLayerId: 4 },
+          drawingInfo: {
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'esriSFS',
+                style: 'esriSFSNull',  // No fill — outlines only
+                outline: {
+                  type: 'esriSLS',
+                  style: 'esriSLSSolid',
+                  color: [255, 255, 255, 255],  // Solid white
+                  width: 2,
+                },
+              },
+            },
+          },
+        }]);
         map.addSource('cadastral-arcgis', {
           type: 'raster',
           tiles: [
-            `${QLD_CADASTRAL}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:4&f=image`,
+            `${QLD_CADASTRAL}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:4&dynamicLayers=${encodeURIComponent(cadastralDynamicLayers)}&f=image`,
           ],
           tileSize: 512,
         });
@@ -284,7 +303,7 @@ export default function MapExplorer() {
           type: 'raster',
           source: 'cadastral-arcgis',
           minzoom: 13,
-          paint: { 'raster-opacity': 0.8 },
+          paint: { 'raster-opacity': 1 },
           layout: { visibility: 'none' },
         });
 
