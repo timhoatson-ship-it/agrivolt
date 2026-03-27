@@ -161,10 +161,32 @@ export default function MapExplorer() {
         }
 
         // Add ArcGIS REST export layer for Strategic Cropping Land (Layer 105)
+        // Custom purple rendering via dynamicLayers — the default server style is
+        // a pale transparent green that's invisible over satellite imagery.
+        const sclDynamicLayers = JSON.stringify([{
+          id: 105,
+          source: { type: 'mapLayer', mapLayerId: 105 },
+          drawingInfo: {
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'esriSFS',
+                style: 'esriSFSSolid',
+                color: [168, 85, 247, 255],  // #a855f7 purple
+                outline: {
+                  type: 'esriSLS',
+                  style: 'esriSLSSolid',
+                  color: [128, 50, 200, 255],
+                  width: 1.5,
+                },
+              },
+            },
+          },
+        }]);
         map.addSource('scl-arcgis', {
           type: 'raster',
           tiles: [
-            `${QLD_SCL_EXPORT}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:105&f=image`,
+            `${QLD_SCL_EXPORT}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:105&dynamicLayers=${encodeURIComponent(sclDynamicLayers)}&f=image`,
           ],
           tileSize: 512,
         });
@@ -172,7 +194,7 @@ export default function MapExplorer() {
           id: 'scl-layer',
           type: 'raster',
           source: 'scl-arcgis',
-          paint: { 'raster-opacity': 0.5 },
+          paint: { 'raster-opacity': 0.7 },
           layout: { visibility: 'none' },
         });
       });
