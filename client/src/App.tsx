@@ -7,6 +7,7 @@ import NotFound from './pages/NotFound';
 // Lazy-load heavy map pages
 const MapExplorer = lazy(() => import('./pages/MapExplorer'));
 const DeveloperDashboard = lazy(() => import('./pages/DeveloperDashboard'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 
 function LoadingFallback() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/explore" element={<MapExplorer />} />
           <Route path="/dashboard" element={<DeveloperDashboard />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

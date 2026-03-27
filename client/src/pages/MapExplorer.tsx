@@ -25,6 +25,15 @@ const GA_TRANSMISSION = `${GA_BASE}/2/query?where=1%3D1&outFields=name,capacityk
 // ArcGIS REST export endpoint for Strategic Cropping Land overlay
 const QLD_SCL_EXPORT = 'https://spatial-gis.information.qld.gov.au/arcgis/rest/services/Boundaries/AdminBoundariesFramework/MapServer/export';
 
+// Flood zones — same AdminBoundariesFramework service, Layer 15
+const QLD_FLOOD_EXPORT = QLD_SCL_EXPORT; // Same base URL
+
+// Cadastral boundaries
+const QLD_CADASTRAL = 'https://spatial-gis.information.qld.gov.au/arcgis/rest/services/PlanningCadastre/LandParcelPropertyFramework/MapServer/export';
+
+// Power stations — same GA service, Layer 1
+const GA_POWERSTATIONS = `${GA_BASE}/1/query?where=1%3D1&outFields=name,primaryfueltype,generationmw,state&f=geojson&resultRecordCount=2000`;
+
 interface LayerConfig {
   id: string;
   label: string;
@@ -37,7 +46,33 @@ const DEFAULT_LAYERS: LayerConfig[] = [
   { id: 'substations', label: 'Transmission Substations', visible: true, color: '#f59e0b', description: 'Major substations (Geoscience Australia)' },
   { id: 'transmission', label: 'Transmission Lines', visible: true, color: '#ef4444', description: 'High-voltage transmission lines' },
   { id: 'scl', label: 'Strategic Cropping Land', visible: false, color: '#a855f7', description: 'QLD SCL overlay (planning constraint)' },
+  { id: 'flood', label: 'Flood Zones (QFAO)', visible: false, color: '#3b82f6', description: 'Queensland Floodplain Assessment Overlay' },
+  { id: 'cadastral', label: 'Property Boundaries', visible: false, color: '#6b7280', description: 'QLD cadastral parcels (zoom in to see)' },
+  { id: 'powerstations', label: 'Power Stations', visible: false, color: '#8b5cf6', description: 'Major power stations (Geoscience Australia)' },
 ];
+
+async function fetchSolarData(lat: number, lng: number): Promise<{ solarMjM2: number; etMm: number }> {
+  try {
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=shortwave_radiation_sum,et0_fao_evapotranspiration&timezone=Australia%2FBrisbane&past_days=365&forecast_days=1`
+    );
+    const data = await res.json();
+    const radiationDays = data.daily?.shortwave_radiation_sum || [];
+    const etDays = data.daily?.et0_fao_evapotranspiration || [];
+    const validRadiation = radiationDays.filter((v: number) => v > 0);
+    const avgSolarMjM2 = validRadiation.length > 0
+      ? validRadiation.reduce((a: number, b: number) => a + b, 0) / validRadiation.length
+      : 21.5;
+    const validEt = etDays.filter((v: number) => v > 0);
+    const avgEtMm = validEt.length > 0
+      ? validEt.reduce((a: number, b: number) => a + b, 0) / validEt.length
+      : 5.0;
+    return { solarMjM2: Math.round(avgSolarMjM2 * 10) / 10, etMm: avgEtMm };
+  } catch (err) {
+    console.warn('Open-Meteo fetch failed:', err);
+    return { solarMjM2: 21.5, etMm: 5.0 };
+  }
+}
 
 export default function MapExplorer() {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -197,6 +232,99 @@ export default function MapExplorer() {
           paint: { 'raster-opacity': 0.7 },
           layout: { visibility: 'none' },
         });
+
+        // Flood Zones (Layer 15) — same service as SCL, blue rendering
+        const floodDynamicLayers = JSON.stringify([{
+          id: 15,
+          source: { type: 'mapLayer', mapLayerId: 15 },
+          drawingInfo: {
+            renderer: {
+              type: 'simple',
+              symbol: {
+                type: 'esriSFS',
+                style: 'esriSFSSolid',
+                color: [59, 130, 246, 255], // #3b82f6 blue
+                outline: {
+                  type: 'esriSLS',
+                  style: 'esriSLSSolid',
+                  color: [37, 99, 235, 255],
+                  width: 1,
+                },
+              },
+            },
+          },
+        }]);
+        map.addSource('flood-arcgis', {
+          type: 'raster',
+          tiles: [
+            `${QLD_FLOOD_EXPORT}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:15&dynamicLayers=${encodeURIComponent(floodDynamicLayers)}&f=image`,
+          ],
+          tileSize: 512,
+        });
+        map.addLayer({
+          id: 'flood-layer',
+          type: 'raster',
+          source: 'flood-arcgis',
+          paint: { 'raster-opacity': 0.6 },
+          layout: { visibility: 'none' },
+        });
+
+        // Cadastral Boundaries (Layer 4) — only renders at zoom 13+
+        map.addSource('cadastral-arcgis', {
+          type: 'raster',
+          tiles: [
+            `${QLD_CADASTRAL}?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&layers=show:4&f=image`,
+          ],
+          tileSize: 512,
+        });
+        map.addLayer({
+          id: 'cadastral-layer',
+          type: 'raster',
+          source: 'cadastral-arcgis',
+          minzoom: 13,
+          paint: { 'raster-opacity': 0.8 },
+          layout: { visibility: 'none' },
+        });
+
+        // Power Stations (GA Layer 1)
+        try {
+          const psRes = await fetch(GA_POWERSTATIONS);
+          const psData = await psRes.json();
+          map.addSource('powerstations', { type: 'geojson', data: psData });
+          map.addLayer({
+            id: 'powerstations-layer',
+            type: 'circle',
+            source: 'powerstations',
+            paint: {
+              'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 5, 10, 10, 15, 14],
+              'circle-color': '#8b5cf6',
+              'circle-stroke-color': '#ffffff',
+              'circle-stroke-width': 2,
+              'circle-opacity': 0.9,
+            },
+            layout: { visibility: 'none' },
+          });
+          map.addLayer({
+            id: 'powerstations-labels',
+            type: 'symbol',
+            source: 'powerstations',
+            minzoom: 8,
+            layout: {
+              'text-field': ['concat', ['get', 'name'], ' (', ['get', 'primaryfueltype'], ')'],
+              'text-size': 10,
+              'text-offset': [0, 1.8],
+              'text-anchor': 'top',
+              visibility: 'none',
+            },
+            paint: {
+              'text-color': '#8b5cf6',
+              'text-halo-color': '#000000',
+              'text-halo-width': 1,
+            },
+          });
+        } catch (err) {
+          console.warn('Failed to load power stations:', err);
+        }
       });
 
       // Click handler for pin-drop assessment
@@ -253,7 +381,11 @@ export default function MapExplorer() {
     const isFlood = false; // Would query flood layer
 
     const leaseEstimate = calculateLeaseEstimate(totalHectares, nearestDist, isScl, isFlood);
-    const waterSavings = calculateWaterSavings(leaseEstimate.usableHectares);
+
+    // Fetch real solar data for this location
+    const solarData = await fetchSolarData(lat, lng);
+    const annualEvaporationMm = solarData.etMm * 365;
+    const waterSavings = calculateWaterSavings(leaseEstimate.usableHectares, annualEvaporationMm);
     const shadePremium = calculateShadePremium();
     const overallViability = getOverallViability(gridRating, isScl, isFlood);
 
@@ -280,7 +412,7 @@ export default function MapExplorer() {
         otherConstraints: [],
       },
       solarExposure: {
-        annualAvgMjM2: 21.5, // QLD average — will be replaced by BOM grid lookup
+        annualAvgMjM2: solarData.solarMjM2,
         monthlyAvgMjM2: [25.5, 23.8, 21.2, 17.8, 14.5, 12.8, 13.5, 16.2, 19.8, 22.5, 24.8, 25.8],
       },
       leaseEstimate,
@@ -602,6 +734,15 @@ function AssessmentCard({ assessment, onClose, onRegister }: { assessment: LandA
       <p className="text-xs text-gray-400 text-center mt-2">
         Based on {formatHa(assessment.totalHectares)} at 20% panel coverage
       </p>
+
+      <div className="mt-3 pt-3 border-t border-gray-100">
+        <p className="text-[10px] text-gray-400 text-center leading-relaxed">
+          Data: Geoscience Australia &middot; Bureau of Meteorology &middot; QLD Spatial Services
+        </p>
+        <p className="text-[10px] text-gray-400 text-center">
+          Estimates are indicative only and based on publicly available data. Not financial advice.
+        </p>
+      </div>
     </div>
   );
 }
@@ -890,6 +1031,15 @@ function RegistrationModal({ assessment, onClose }: { assessment: LandAssessment
               {error}
             </div>
           )}
+
+          <div className="flex items-start gap-2">
+            <input type="checkbox" name="consent" required className="mt-1 accent-brand-500 shrink-0" />
+            <label className="text-xs text-gray-500 leading-relaxed">
+              I consent to AgriVolt collecting and storing my information to connect me with solar developers.
+              My location will be anonymized (&plusmn;2km) when shown to developers.
+              I can request deletion of my data at any time.
+            </label>
+          </div>
 
           <button
             type="submit"

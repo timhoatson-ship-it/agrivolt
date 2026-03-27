@@ -126,4 +126,17 @@ router.get('/properties', async (_req, res) => {
   }
 });
 
+// DELETE /api/farmers/:id — data deletion request
+router.delete('/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ success: false, error: 'Invalid ID' });
+    await db.delete(farmers).where(eq(farmers.id, id));
+    res.json({ success: true, message: 'Your data has been deleted.' });
+  } catch (error) {
+    console.error('[Farmers] Delete error:', error);
+    res.status(500).json({ success: false, error: 'Failed to delete record' });
+  }
+});
+
 export default router;
