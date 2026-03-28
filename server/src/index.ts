@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import farmersRouter from './routes/farmers.js';
 import authRouter from './routes/auth.js';
+import { runMigrations } from './db/index.js';
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3001', 10);
@@ -76,8 +77,10 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ success: false, error: 'Internal server error' });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[AgriVolt API] Running on http://0.0.0.0:${PORT}`);
-  console.log(`[AgriVolt API] CORS origin: ${CORS_ORIGIN}`);
-  console.log(`[AgriVolt API] Database: PostgreSQL (Railway)`);
+runMigrations().then(() => {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[AgriVolt API] Running on http://0.0.0.0:${PORT}`);
+    console.log(`[AgriVolt API] CORS origin: ${CORS_ORIGIN}`);
+    console.log(`[AgriVolt API] Database: PostgreSQL (Railway)`);
+  });
 });

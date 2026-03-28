@@ -2,11 +2,18 @@ import type { FarmerRegistration, ApiResponse } from '@shared/types';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-/** In-memory JWT token storage */
-let authToken: string | null = null;
+const TOKEN_KEY = 'agrivolt_token';
+
+let authToken: string | null = (() => {
+  try { return localStorage.getItem(TOKEN_KEY); } catch { return null; }
+})();
 
 export function setAuthToken(token: string | null) {
   authToken = token;
+  try {
+    if (token) localStorage.setItem(TOKEN_KEY, token);
+    else localStorage.removeItem(TOKEN_KEY);
+  } catch { /* SSR / private browsing */ }
 }
 
 export function getAuthToken(): string | null {

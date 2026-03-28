@@ -675,12 +675,20 @@ export default function MapExplorer() {
     setScreeningResult({ polygonAreaHa: areaHa, centerLat: cLat, centerLng: cLng, substationsInside, substationsNearby });
   }, []);
 
+  const drawListenersRef = useRef<{ create: any; update: any; delete: any } | null>(null);
+
   const toggleDrawMode = useCallback(async () => {
     const map = mapRef.current;
     if (!map) return;
 
     if (drawMode) {
-      // Disable draw mode
+      // Remove listeners before removing control
+      if (drawListenersRef.current) {
+        map.off('draw.create', drawListenersRef.current.create);
+        map.off('draw.update', drawListenersRef.current.update);
+        map.off('draw.delete', drawListenersRef.current.delete);
+        drawListenersRef.current = null;
+      }
       if (drawRef.current) {
         map.removeControl(drawRef.current);
         drawRef.current = null;
@@ -702,17 +710,22 @@ export default function MapExplorer() {
     setDrawMode(true);
     setScreeningResult(null);
 
-    map.on('draw.create', (e: any) => {
+    const onCreate = (e: any) => {
       const polygon = e.features?.[0];
       if (polygon) screenPolygon(polygon);
-    });
-    map.on('draw.update', (e: any) => {
+    };
+    const onUpdate = (e: any) => {
       const polygon = e.features?.[0];
       if (polygon) screenPolygon(polygon);
-    });
-    map.on('draw.delete', () => {
+    };
+    const onDelete = () => {
       setScreeningResult(null);
-    });
+    };
+    drawListenersRef.current = { create: onCreate, update: onUpdate, delete: onDelete };
+
+    map.on('draw.create', onCreate);
+    map.on('draw.update', onUpdate);
+    map.on('draw.delete', onDelete);
   }, [drawMode, screenPolygon]);
 
   const clearScreening = useCallback(() => {

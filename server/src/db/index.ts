@@ -19,10 +19,8 @@ const sql = postgres(DATABASE_URL, {
 
 export const db = drizzle(sql, { schema });
 
-// Auto-migrate: ensure all required tables and columns exist
-(async () => {
+export async function runMigrations() {
   try {
-    // Ensure developers table exists with all required columns
     await sql`
       CREATE TABLE IF NOT EXISTS developers (
         id serial PRIMARY KEY,
@@ -38,12 +36,11 @@ export const db = drizzle(sql, { schema });
         created_at timestamp DEFAULT now() NOT NULL
       )
     `;
-    // Add password_hash column if it doesn't exist (for existing installations)
     await sql`ALTER TABLE developers ADD COLUMN IF NOT EXISTS password_hash text`;
     console.log('[DB] Schema migration check complete');
   } catch (err) {
     console.warn('[DB] Migration check:', (err as Error).message);
   }
-})();
+}
 
 console.log('[DB] PostgreSQL connected');

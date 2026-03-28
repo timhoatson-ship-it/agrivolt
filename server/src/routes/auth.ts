@@ -8,7 +8,15 @@ import { eq } from 'drizzle-orm';
 import type { Request, Response, NextFunction } from 'express';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'agrivolt-dev-secret-change-in-production';
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    console.error('[Auth] FATAL: JWT_SECRET environment variable is required.');
+    process.exit(1);
+  }
+  return secret;
+}
+const JWT_SECRET = getJwtSecret();
 
 const registerSchema = z.object({
   companyName: z.string().min(1).max(200),

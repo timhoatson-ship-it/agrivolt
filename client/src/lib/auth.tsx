@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { api, setAuthToken, type AuthResponse } from './api';
+import { api, setAuthToken, getAuthToken, type AuthResponse } from './api';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -22,7 +22,20 @@ const AuthContext = createContext<AuthState>({
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [developer, setDeveloper] = useState<AuthResponse['developer'] | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) { setLoading(false); return; }
+    api.auth.me().then(res => {
+      if (res.success && res.data) {
+        setDeveloper(res.data);
+      } else {
+        setAuthToken(null);
+      }
+      setLoading(false);
+    });
+  }, []);
 
   const login = useCallback(async (email: string, password: string): Promise<string | null> => {
     const res = await api.auth.login(email, password);
